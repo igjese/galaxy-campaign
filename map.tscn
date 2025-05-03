@@ -1,14 +1,7 @@
-[gd_scene load_steps=10 format=3 uid="uid://dbkbcp753u33p"]
+[gd_scene load_steps=3 format=3 uid="uid://dbkbcp753u33p"]
 
-[ext_resource type="PackedScene" uid="uid://dtipc47e5axhk" path="res://systems/SystemNode.tscn" id="1_c7s6e"]
 [ext_resource type="Script" uid="uid://d0emdqkydvqc2" path="res://map.gd" id="1_gqbix"]
 [ext_resource type="Texture2D" uid="uid://fgaapbg5fdsi" path="res://assets/map-background.png" id="2_wijl4"]
-[ext_resource type="Texture2D" uid="uid://nwoflqxkdbgn" path="res://assets/stars/star01.webp" id="3_05x41"]
-[ext_resource type="Texture2D" uid="uid://qwo4r3jduoyi" path="res://assets/stars/star07.webp" id="5_05x41"]
-[ext_resource type="Texture2D" uid="uid://bn46dlxqlnne" path="res://assets/stars/star03.webp" id="5_oysan"]
-[ext_resource type="Texture2D" uid="uid://cjwf3nluhhrtt" path="res://assets/stars/star06.webp" id="7_0t07s"]
-[ext_resource type="Texture2D" uid="uid://c3hym6q3ry72a" path="res://assets/stars/star08.webp" id="7_gqbix"]
-[ext_resource type="Texture2D" uid="uid://b2uhoyh6fgrxd" path="res://assets/stars/star04.webp" id="8_6qsgm"]
 
 [node name="Map" type="Node2D"]
 script = ExtResource("1_gqbix")
@@ -25,72 +18,5 @@ texture = ExtResource("2_wijl4")
 expand_mode = 2
 
 [node name="ConnectionLines" type="Line2D" parent="."]
-
-[node name="SystemNode" parent="." instance=ExtResource("1_c7s6e")]
-offset_left = 211.0
-offset_top = 451.0
-offset_right = 281.0
-offset_bottom = 521.0
-texture_normal = ExtResource("7_0t07s")
-system_name = "Velthara"
-owned_by = "AI"
-materials = 5
-supply = 2
-
-[node name="SystemNode2" parent="." instance=ExtResource("1_c7s6e")]
-offset_left = 419.0
-offset_top = 397.0
-offset_right = 489.0
-offset_bottom = 467.0
-texture_normal = ExtResource("3_05x41")
-system_name = "Niraxis"
-owned_by = "Player"
-materials = 9
-supply = 9
-personnel = 9
-
-[node name="SystemNode3" parent="." instance=ExtResource("1_c7s6e")]
-offset_left = 676.0
-offset_top = 428.0
-offset_right = 746.0
-offset_bottom = 498.0
-texture_normal = ExtResource("5_05x41")
-system_name = "Tessilune"
-owned_by = "AI"
-materials = 2
-supply = 3
-personnel = 5
-
-[node name="SystemNode4" parent="." instance=ExtResource("1_c7s6e")]
-offset_left = 609.0
-offset_top = 199.0
-offset_right = 679.0
-offset_bottom = 269.0
-texture_normal = ExtResource("5_oysan")
-system_name = "Corvyn"
-owned_by = "AI"
-materials = 1
-supply = 7
-
-[node name="SystemNode5" parent="." instance=ExtResource("1_c7s6e")]
-offset_left = 913.0
-offset_top = 458.0
-offset_right = 983.0
-offset_bottom = 528.0
-texture_normal = ExtResource("7_gqbix")
-system_name = "Zharan"
-owned_by = "AI"
-materials = 3
-supply = 1
-
-[node name="SystemNode6" parent="." instance=ExtResource("1_c7s6e")]
-offset_left = 937.0
-offset_top = 210.0
-offset_right = 1007.0
-offset_bottom = 280.0
-texture_normal = ExtResource("8_6qsgm")
-system_name = "Elydris"
-owned_by = "AI"
-materials = 9
-supply = 9
-personnel = 9
+width = 5.0
+default_color = Color(0.347579, 0.605034, 0.954115, 0.423529)
