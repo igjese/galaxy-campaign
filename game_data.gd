@@ -11,7 +11,8 @@ var systems = {
         "position": Vector2(420, 320),
         "materials": 1,
         "supply": 0,
-        "personnel": 2
+        "personnel": 2,
+        "faction": "player"
     },
     "Tessilune": {
         "position": Vector2(600, 380),

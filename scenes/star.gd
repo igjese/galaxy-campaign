@@ -4,6 +4,7 @@ extends Node2D
 @export var materials: int
 @export var supply: int
 @export var personnel: int
+@export var faction: String = "ai"  # default to AI-owned
 
 @onready var name_label = $SystemNode/Name
 @onready var info_label = $SystemNode/Info
@@ -42,3 +43,10 @@ func update_labels():
         info += "P%d" % personnel
 
     info_label.text = info
+
+    var color = Color.LIGHT_CORAL
+    if faction == "player":
+        color = Color.LIGHT_GREEN
+
+    name_label.add_theme_color_override("font_color", color)
+    info_label.add_theme_color_override("font_color", color)

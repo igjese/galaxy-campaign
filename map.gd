@@ -20,6 +20,7 @@ func spawn_stars():
         star.supply = data.supply
         star.personnel = data.personnel
         star.position = data.position
+        star.faction = data.faction if data.has("faction") else "ai"
 
         add_child(star)
         system_map[name] = star

@@ -19,4 +19,4 @@ expand_mode = 2
 
 [node name="ConnectionLines" type="Line2D" parent="."]
 width = 5.0
-default_color = Color(0.347579, 0.605034, 0.954115, 0.423529)
+default_color = Color(0.596078, 0.517647, 0.984314, 0.290196)
