@@ -9,6 +9,7 @@ func _ready():
     randomize()
     spawn_stars()
     draw_connections()
+    update_gui()
 
 func spawn_stars():
     for name in GameData.systems.keys():
@@ -38,3 +39,32 @@ func draw_connections():
 
             connection_lines.add_point(pos_a)
             connection_lines.add_point(pos_b)
+
+
+func _on_end_turn_pressed():
+    end_turn()
+
+
+func end_turn():
+    GameData.turn += 1
+    # Add system output to player resources
+    for star in system_map.values():
+        if star.faction == "player":
+            GameData.player_materials += star.materials
+            GameData.player_supply += star.supply
+            GameData.player_personnel += star.personnel
+    update_gui()
+    
+func update_gui():
+    update_turn()
+    update_resource_totals()
+    
+func update_turn():
+    $UI/TurnCount.text = "Turn: %d" % GameData.turn
+    
+func update_resource_totals():
+    $UI/Resources.text = "M: %d | S: %d | P: %d" % [
+        GameData.player_materials,
+        GameData.player_supply,
+        GameData.player_personnel
+    ]

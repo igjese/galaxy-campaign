@@ -19,4 +19,36 @@ expand_mode = 2
 
 [node name="ConnectionLines" type="Line2D" parent="."]
 width = 5.0
-default_color = Color(0.596078, 0.517647, 0.984314, 0.290196)
+default_color = Color(0.475884, 0.313445, 0.946131, 0.290196)
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1440.0
+offset_bottom = 900.0
+
+[node name="EndTurn" type="Button" parent="UI"]
+layout_mode = 0
+offset_left = 1345.0
+offset_top = 15.0
+offset_right = 1423.0
+offset_bottom = 46.0
+text = "End Turn"
+
+[node name="Resources" type="Label" parent="UI"]
+layout_mode = 0
+offset_left = 629.0
+offset_top = 15.0
+offset_right = 750.0
+offset_bottom = 38.0
+text = "M: 0 | S: 0 | P: 0"
+
+[node name="TurnCount" type="Label" parent="UI"]
+layout_mode = 0
+offset_left = 23.0
+offset_top = 15.0
+offset_right = 77.0
+offset_bottom = 38.0
+text = "Turn: 1"
+
+[connection signal="pressed" from="UI/EndTurn" to="." method="_on_end_turn_pressed"]

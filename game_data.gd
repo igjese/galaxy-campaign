@@ -1,5 +1,11 @@
 extends Node
 
+var turn := 1
+var player_materials := 0
+var player_supply := 0
+var player_personnel := 0
+
+
 var systems = {
     "Velthara": {
         "position": Vector2(200, 400),
@@ -9,9 +15,9 @@ var systems = {
     },
     "Niraxis": {
         "position": Vector2(420, 320),
-        "materials": 1,
-        "supply": 0,
-        "personnel": 2,
+        "materials": 5,
+        "supply": 5,
+        "personnel": 5,
         "faction": "player"
     },
     "Tessilune": {
