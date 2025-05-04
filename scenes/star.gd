@@ -5,14 +5,22 @@ extends Node2D
 @export var supply: int
 @export var personnel: int
 @export var faction: String = "ai"  # default to AI-owned
+@export var has_shipyard: bool = false
 
 @onready var name_label = $SystemNode/Name
 @onready var info_label = $SystemNode/Info
 @onready var texture_button = $SystemNode  # assuming SystemNode is the TextureButton
+@onready var shipyard_icon = $SystemNode/Shipyard  # update path if needed
 
 func _ready():
     update_labels()
+    update_indicators()
     assign_random_texture()
+    
+func update_indicators():
+    shipyard_icon.visible = has_shipyard
+    var color = Color.LIGHT_GREEN if faction == "player" else Color.LIGHT_CORAL
+    shipyard_icon.modulate = color
 
 func assign_random_texture():
     var dir = DirAccess.open("res://assets/stars")
@@ -43,10 +51,7 @@ func update_labels():
         info += "P%d" % personnel
 
     info_label.text = info
-
-    var color = Color.LIGHT_CORAL
-    if faction == "player":
-        color = Color.LIGHT_GREEN
-
+    
+    var color = Color.LIGHT_GREEN if faction == "player" else Color.LIGHT_CORAL
     name_label.add_theme_color_override("font_color", color)
     info_label.add_theme_color_override("font_color", color)

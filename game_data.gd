@@ -18,7 +18,8 @@ var worlds = {
         "materials": 5,
         "supply": 5,
         "personnel": 5,
-        "faction": "player"
+        "faction": "player",
+        "has_shipyard": true
     },
     "Tessilune": {
         "position": Vector2(600, 380),

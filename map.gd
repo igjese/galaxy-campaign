@@ -22,6 +22,7 @@ func spawn_worlds():
         world.personnel = data.personnel
         world.position = data.position
         world.faction = data.faction if data.has("faction") else "ai"
+        world.has_shipyard = data.has_shipyard if data.has("has_shipyard") else false
 
         add_child(world)
         system_map[name] = world
