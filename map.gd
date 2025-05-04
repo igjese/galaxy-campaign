@@ -47,13 +47,15 @@ func _on_end_turn_pressed():
 
 func end_turn():
     GameData.turn += 1
-    # Add system output to player resources
+    collect_resources()
+    update_gui()
+    
+func collect_resources():
     for star in system_map.values():
         if star.faction == "player":
             GameData.player_materials += star.materials
             GameData.player_supply += star.supply
             GameData.player_personnel += star.personnel
-    update_gui()
     
 func update_gui():
     update_turn()
