@@ -15,11 +15,12 @@ var ships = {
 
 @onready var name_label = $SystemNode/Name
 @onready var info_label = $SystemNode/Info
+@onready var ships_label = $SystemNode/Ships
 @onready var texture_button = $SystemNode  # assuming SystemNode is the TextureButton
 @onready var shipyard_icon = $SystemNode/Shipyard  # update path if needed
 
 func _ready():
-    update_labels()
+    update_gui()
     update_indicators()
     assign_random_texture()
     $SystemNode.connect("pressed", Callable(self, "_on_system_pressed"))
@@ -45,23 +46,35 @@ func assign_random_texture():
             var selected = files[randi() % files.size()]
             texture_button.texture_normal = load(selected)
 
-func update_labels():
+func update_gui():
     name_label.text = world_name
 
     var info := ""
     if materials > 0:
-        info += "M%d " % materials
+        info += "%dM " % materials
     if supply > 0:
-        info += "S%d " % supply
+        info += "%dS " % supply
     if personnel > 0:
-        info += "P%d" % personnel
+        info += "%dP" % personnel
 
     info_label.text = info
+    
+    var ship_text := ""
+    if faction == "player":
+        var ship_counts := {}
+        for ship in GameData.ships:
+            if ship.location == world_name and ship.faction == "player":
+                ship_counts[ship.type] = ship_counts.get(ship.type, 0) + 1
+
+        for type in ship_counts.keys():
+            ship_text += "%s:%d " % [type, ship_counts[type]]
+    ships_label.text = ship_text
     
     var color = Color.LIGHT_GREEN if faction == "player" else Color.LIGHT_CORAL
     name_label.add_theme_color_override("font_color", color)
     info_label.add_theme_color_override("font_color", color)
-    
+    ships_label.add_theme_color_override("font_color", color)
+
     
 func _on_system_pressed():
     if not has_shipyard:

@@ -18,7 +18,7 @@ func setup(line_id: String):
     cost_pers = design.cost_pers
     update_count()
     
-func reset_counts():
+func reset():
     count = 0
     update_count()
 

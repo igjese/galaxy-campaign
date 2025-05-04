@@ -7,6 +7,9 @@ var player_personnel := 0
 
 var selected_world = null
 
+var ships = []  # each ship is a dict or lightweight object
+
+
 func open_build_dialog_for(world_node):
     selected_world = world_node
     var dialog = get_tree().get_root().get_node("Map/UI/BuildDialog")

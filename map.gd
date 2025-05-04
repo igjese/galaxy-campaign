@@ -5,11 +5,18 @@ extends Node2D
 
 var system_map = {}
 
+
 func _ready():
     randomize()
     spawn_worlds()
     draw_connections()
+    connect_signals()
     update_gui()
+    
+    
+func connect_signals():
+    $UI/BuildDialog.connect("ships_built", Callable(self, "update_gui"))
+
 
 func spawn_worlds():
     for name in GameData.worlds.keys():
@@ -26,6 +33,7 @@ func spawn_worlds():
 
         add_child(world)
         system_map[name] = world
+
 
 func draw_connections():
     connection_lines.clear_points()
@@ -51,6 +59,7 @@ func end_turn():
     collect_resources()
     update_gui()
     
+    
 func collect_resources():
     for star in system_map.values():
         if star.faction == "player":
@@ -58,12 +67,21 @@ func collect_resources():
             GameData.player_supply += star.supply
             GameData.player_personnel += star.personnel
     
+    
 func update_gui():
     update_turn()
     update_resource_totals()
+    update_worlds()
+    
+
+func update_worlds():
+    for world in system_map.values():
+        world.update_gui()
+
     
 func update_turn():
     $UI/TurnCount.text = "Turn: %d" % GameData.turn
+    
     
 func update_resource_totals():
     $UI/Resources.text = "Materials: %d | Supply: %d | Personnel: %d" % [

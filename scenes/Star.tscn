@@ -19,20 +19,20 @@ stretch_mode = 0
 
 [node name="Name" type="Label" parent="SystemNode"]
 layout_mode = 0
-offset_left = -30.0
-offset_top = 69.0
-offset_right = 106.0
-offset_bottom = 92.0
-text = "asdf"
+offset_left = -31.0
+offset_top = 66.0
+offset_right = 105.0
+offset_bottom = 89.0
+text = "Name"
 horizontal_alignment = 1
 
 [node name="Info" type="Label" parent="SystemNode"]
 layout_mode = 0
 offset_left = -19.0
-offset_top = -26.0
+offset_top = -22.0
 offset_right = 91.0
-offset_bottom = -3.0
-text = "asdf"
+offset_bottom = 1.0
+text = "M:3 P:3"
 horizontal_alignment = 1
 
 [node name="Shipyard" type="TextureRect" parent="SystemNode"]
@@ -43,3 +43,12 @@ offset_right = 101.0
 offset_bottom = 46.0
 texture = ExtResource("3_xpnm2")
 expand_mode = 1
+
+[node name="Ships" type="Label" parent="SystemNode"]
+layout_mode = 0
+offset_left = -48.0
+offset_top = 91.0
+offset_right = 119.0
+offset_bottom = 114.0
+text = "FF:1"
+horizontal_alignment = 1
