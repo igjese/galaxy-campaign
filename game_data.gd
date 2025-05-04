@@ -1,9 +1,9 @@
 extends Node
 
 var turn := 1
-var player_materials := 0
-var player_supply := 0
-var player_personnel := 0
+var player_materials := 10
+var player_supply := 10
+var player_personnel := 10
 
 var selected_world = null
 
