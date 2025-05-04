@@ -21,7 +21,7 @@ func _ready():
 
 func prepare_for_world(world_node):
     world = world_node
-    $VBox/Shipyard.text = "%s shipyards" % world_node.world_name
+    $VBox/WorldName.text = "%s" % world_node.world_name
 
     for line in line_container.get_children():
         line.reset()  # you'll add this method to set count = 0
@@ -46,7 +46,7 @@ func update_total_cost():
             total_mats += design.cost_mats * count
             total_pers += design.cost_pers * count
 
-    $VBox/Total.text = "Total: %dM  %dP" % [total_mats, total_pers]
+    $VBox/Summary.text = "Total: %dM  %dP" % [total_mats, total_pers]
 
     $VBox/Cmd/Build.disabled = (
         total_mats > GameData.player_materials or

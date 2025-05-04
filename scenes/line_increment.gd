@@ -25,7 +25,7 @@ func reset():
 
 func update_count():
     $Qty.text = str(count)
-    $Cost.text = "Cost: %dM %dP" % [cost_mats * count, cost_pers * count]
+    $Info.text = "Cost: %dM %dP" % [cost_mats * count, cost_pers * count]
     emit_signal("count_changed", id, count)
 
 func _on_decrease_pressed():

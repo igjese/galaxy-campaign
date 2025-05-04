@@ -15,7 +15,7 @@ func _ready():
     
     
 func connect_signals():
-    $UI/BuildDialog.connect("ships_built", Callable(self, "update_gui"))
+    $UI/WorldDialog.connect("ships_built", Callable(self, "update_gui"))
 
 
 func spawn_worlds():
