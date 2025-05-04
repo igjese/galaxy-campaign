@@ -37,11 +37,12 @@ text = "End Turn"
 
 [node name="Resources" type="Label" parent="UI"]
 layout_mode = 0
-offset_left = 629.0
+offset_left = 440.0
 offset_top = 15.0
-offset_right = 750.0
+offset_right = 1015.0
 offset_bottom = 38.0
 text = "M: 0 | S: 0 | P: 0"
+horizontal_alignment = 1
 
 [node name="TurnCount" type="Label" parent="UI"]
 layout_mode = 0

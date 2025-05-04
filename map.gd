@@ -66,7 +66,7 @@ func update_turn():
     $UI/TurnCount.text = "Turn: %d" % GameData.turn
     
 func update_resource_totals():
-    $UI/Resources.text = "M: %d | S: %d | P: %d" % [
+    $UI/Resources.text = "Materials: %d | Supply: %d | Personnel: %d" % [
         GameData.player_materials,
         GameData.player_supply,
         GameData.player_personnel
