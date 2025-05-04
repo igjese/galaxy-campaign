@@ -6,6 +6,7 @@
 script = ExtResource("1_8vawk")
 
 [node name="LineName" type="Label" parent="."]
+custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "SomeName"
@@ -15,12 +16,19 @@ layout_mode = 2
 text = "-"
 
 [node name="Qty" type="Label" parent="."]
+custom_minimum_size = Vector2(26, 0)
 layout_mode = 2
 text = "0"
+horizontal_alignment = 2
 
 [node name="Increase" type="Button" parent="."]
 layout_mode = 2
 text = "+"
+
+[node name="Cost" type="Label" parent="."]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+horizontal_alignment = 2
 
 [connection signal="pressed" from="Decrease" to="." method="_on_decrease_pressed"]
 [connection signal="pressed" from="Increase" to="." method="_on_increase_pressed"]

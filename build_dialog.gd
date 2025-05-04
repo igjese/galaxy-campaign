@@ -28,3 +28,26 @@ func prepare_for_world(world_node):
 
 func _on_line_updated(id: String, count: int):
     build_order[id] = count
+    update_total_cost()
+
+func update_total_cost():
+    var total_mats = 0
+    var total_pers = 0
+
+    for id in build_order.keys():
+        var count = build_order[id]
+        var design = GameData.ship_designs.get(id)
+        if design:
+            total_mats += design.cost_mats * count
+            total_pers += design.cost_pers * count
+
+    $VBox/Total.text = "Total: %dM  %dP" % [total_mats, total_pers]
+
+    '''
+    $VBoxContainer/BuildButton.disabled = (
+        total_mats > GameData.player_materials or
+        total_pers > GameData.player_personnel
+    )    
+    '''
+
+    
