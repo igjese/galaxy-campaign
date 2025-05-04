@@ -2,6 +2,7 @@ extends Node2D
 
 @onready var connection_lines = $ConnectionLines
 @onready var world_scene = preload("res://scenes/Star.tscn")  # Adjust path as needed
+@onready var move_indicator_scene = preload("res://scenes/MoveIndicator.tscn")
 
 var system_map = {}
 
@@ -16,6 +17,7 @@ func _ready():
     
 func connect_signals():
     $UI/WorldDialog.connect("ships_built", Callable(self, "update_gui"))
+    $UI/WorldDialog.connect("move_queued", Callable(self, "_on_move_queued"))
 
 
 func spawn_worlds():
@@ -89,3 +91,18 @@ func update_resource_totals():
         GameData.player_supply,
         GameData.player_personnel
     ]
+
+func _on_move_queued(from: String, to: String, ships: Dictionary):
+    var from_star = system_map.get(from)
+    var to_star = system_map.get(to)
+
+    var label = ""
+    for type in ships.keys():
+        var count = ships[type]
+        if count > 0:
+            label += "%s:%d  " % [type, count]
+
+    var indicator = move_indicator_scene.instantiate()
+    indicator.setup(from_star.global_position, to_star.global_position, label.strip_edges())
+    $PendingMoves.add_child(indicator)
+    update_gui()

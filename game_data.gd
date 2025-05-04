@@ -9,6 +9,8 @@ var selected_world = null
 
 var ships = []  # each ship is a dict or lightweight object
 
+var pending_moves = []  # each move = { type, count, from, to }
+
 
 func open_build_dialog_for(world_node):
     selected_world = world_node
