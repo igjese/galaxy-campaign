@@ -6,7 +6,7 @@ var player_supply := 0
 var player_personnel := 0
 
 
-var systems = {
+var worlds = {
     "Velthara": {
         "position": Vector2(200, 400),
         "materials": 3,

@@ -10,10 +10,10 @@ config_version=5
 
 [application]
 
-config/name="galaxy"
+config/name="Worlds & Fleets: Galaxy"
 run/main_scene="uid://dbkbcp753u33p"
 config/features=PackedStringArray("4.4", "Forward Plus")
-config/icon="res://icon.svg"
+config/icon="uid://dsljlknkbitdx"
 
 [autoload]
 

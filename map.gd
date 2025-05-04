@@ -1,30 +1,30 @@
 extends Node2D
 
 @onready var connection_lines = $ConnectionLines
-@onready var star_scene = preload("res://scenes/Star.tscn")  # Adjust path as needed
+@onready var world_scene = preload("res://scenes/Star.tscn")  # Adjust path as needed
 
 var system_map = {}
 
 func _ready():
     randomize()
-    spawn_stars()
+    spawn_worlds()
     draw_connections()
     update_gui()
 
-func spawn_stars():
-    for name in GameData.systems.keys():
-        var data = GameData.systems[name]
+func spawn_worlds():
+    for name in GameData.worlds.keys():
+        var data = GameData.worlds[name]
 
-        var star = star_scene.instantiate()
-        star.system_name = name
-        star.materials = data.materials
-        star.supply = data.supply
-        star.personnel = data.personnel
-        star.position = data.position
-        star.faction = data.faction if data.has("faction") else "ai"
+        var world = world_scene.instantiate()
+        world.world_name = name
+        world.materials = data.materials
+        world.supply = data.supply
+        world.personnel = data.personnel
+        world.position = data.position
+        world.faction = data.faction if data.has("faction") else "ai"
 
-        add_child(star)
-        system_map[name] = star
+        add_child(world)
+        system_map[name] = world
 
 func draw_connections():
     connection_lines.clear_points()

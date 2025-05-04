@@ -1,6 +1,6 @@
 extends Node2D
 
-@export var system_name: String
+@export var world_name: String
 @export var materials: int
 @export var supply: int
 @export var personnel: int
@@ -32,7 +32,7 @@ func assign_random_texture():
 
 
 func update_labels():
-    name_label.text = system_name
+    name_label.text = world_name
 
     var info := ""
     if materials > 0:
