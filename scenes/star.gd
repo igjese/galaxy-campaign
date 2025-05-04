@@ -7,6 +7,12 @@ extends Node2D
 @export var faction: String = "ai"  # default to AI-owned
 @export var has_shipyard: bool = false
 
+var ships = {
+    "FF": 0,
+    "DD": 0
+}
+
+
 @onready var name_label = $SystemNode/Name
 @onready var info_label = $SystemNode/Info
 @onready var texture_button = $SystemNode  # assuming SystemNode is the TextureButton
@@ -16,7 +22,8 @@ func _ready():
     update_labels()
     update_indicators()
     assign_random_texture()
-    
+    $SystemNode.connect("pressed", Callable(self, "_on_system_pressed"))
+
 func update_indicators():
     shipyard_icon.visible = has_shipyard
     var color = Color.LIGHT_GREEN if faction == "player" else Color.LIGHT_CORAL
@@ -38,7 +45,6 @@ func assign_random_texture():
             var selected = files[randi() % files.size()]
             texture_button.texture_normal = load(selected)
 
-
 func update_labels():
     name_label.text = world_name
 
@@ -55,3 +61,9 @@ func update_labels():
     var color = Color.LIGHT_GREEN if faction == "player" else Color.LIGHT_CORAL
     name_label.add_theme_color_override("font_color", color)
     info_label.add_theme_color_override("font_color", color)
+    
+    
+func _on_system_pressed():
+    if not has_shipyard:
+        return
+    GameData.open_build_dialog_for(self)

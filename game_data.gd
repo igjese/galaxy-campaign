@@ -5,6 +5,14 @@ var player_materials := 0
 var player_supply := 0
 var player_personnel := 0
 
+var selected_world = null
+
+func open_build_dialog_for(world_node):
+    selected_world = world_node
+    var dialog = get_tree().get_root().get_node("Map/UI/BuildDialog")
+    dialog.popup_centered()
+    dialog.prepare_for_world(world_node)
+
 
 var worlds = {
     "Velthara": {
@@ -55,3 +63,8 @@ var connections = [
     ["Elydris", "Corvyn"],
     ["Elydris", "Zharan"]
 ]
+
+var ship_designs = {
+    "FF": { "cost_mats": 3, "cost_pers": 2, "upkeep": 1, "hp": 10, "atk": 5, "def": 2 },
+    "DD": { "cost_mats": 5, "cost_pers": 3, "upkeep": 2, "hp": 20, "atk": 8, "def": 4 }
+}

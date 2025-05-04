@@ -1,0 +1,26 @@
+[gd_scene load_steps=2 format=3 uid="uid://beo2j5sm4mr7k"]
+
+[ext_resource type="Script" uid="uid://d3oiwuwnykqdl" path="res://scenes/line_increment.gd" id="1_8vawk"]
+
+[node name="LineIncrement" type="HBoxContainer"]
+script = ExtResource("1_8vawk")
+
+[node name="LineName" type="Label" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "SomeName"
+
+[node name="Decrease" type="Button" parent="."]
+layout_mode = 2
+text = "-"
+
+[node name="Qty" type="Label" parent="."]
+layout_mode = 2
+text = "0"
+
+[node name="Increase" type="Button" parent="."]
+layout_mode = 2
+text = "+"
+
+[connection signal="pressed" from="Decrease" to="." method="_on_decrease_pressed"]
+[connection signal="pressed" from="Increase" to="." method="_on_increase_pressed"]

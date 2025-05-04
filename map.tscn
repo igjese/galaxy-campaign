@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://dbkbcp753u33p"]
+[gd_scene load_steps=4 format=3 uid="uid://dbkbcp753u33p"]
 
 [ext_resource type="Script" uid="uid://d0emdqkydvqc2" path="res://map.gd" id="1_gqbix"]
 [ext_resource type="Texture2D" uid="uid://fgaapbg5fdsi" path="res://assets/map-background.png" id="2_wijl4"]
+[ext_resource type="Script" uid="uid://embxqtjdjepy" path="res://build_dialog.gd" id="3_e0an3"]
 
 [node name="Map" type="Node2D"]
 script = ExtResource("1_gqbix")
@@ -51,5 +52,20 @@ offset_top = 15.0
 offset_right = 77.0
 offset_bottom = 38.0
 text = "Turn: 1"
+
+[node name="BuildDialog" type="PopupPanel" parent="UI"]
+script = ExtResource("3_e0an3")
+
+[node name="VBox" type="VBoxContainer" parent="UI/BuildDialog"]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 96.0
+offset_bottom = 96.0
+
+[node name="Shipyard" type="Label" parent="UI/BuildDialog/VBox"]
+layout_mode = 2
+
+[node name="LineContainer" type="VBoxContainer" parent="UI/BuildDialog/VBox"]
+layout_mode = 2
 
 [connection signal="pressed" from="UI/EndTurn" to="." method="_on_end_turn_pressed"]
