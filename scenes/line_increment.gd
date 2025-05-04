@@ -39,9 +39,13 @@ func update_gui():
 
     if current_mode == Mode.BUILD:  
         $Info.text = "Cost: %dM %dP" % [cost_mats * count, cost_pers * count]
+        $Increase.disabled = false
+        $Decrease.disabled = (count == 0)
     else:  # MOVE
         available = hulls_available(id)
         $Info.text = "%d available" % available
+        $Increase.disabled = (available == 0 or count >= available)
+        $Decrease.disabled = (count == 0)
 
     emit_signal("count_changed", id, count)
 
