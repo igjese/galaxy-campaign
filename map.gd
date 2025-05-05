@@ -150,15 +150,16 @@ func commence_battle(move):
     var player_fleet = build_fleet("player", move.to, move.type, move.count)
     GameData.ships += player_fleet
 
-    var player_cost = calculate_fleet_cost(player_fleet)
+    var player_cost = Helpers.calculate_fleet_cost(player_fleet)
     var ai_fleet = generate_ai_fleet(player_cost)
 
-    show_combat_dialog(move.from, move.to, player_fleet, ai_fleet)
+    var combat_dialog = $UI/CombatDialog
+    combat_dialog.open(move.to, player_fleet, ai_fleet)
 
 
 func show_combat_dialog(from, to, player_fleet, ai_fleet):
-    var player_cost = calculate_fleet_cost(player_fleet)
-    var ai_cost = calculate_fleet_cost(ai_fleet)
+    var player_cost = Helpers.calculate_fleet_cost(player_fleet)
+    var ai_cost = Helpers.calculate_fleet_cost(ai_fleet)
 
     var win_chance = float(player_cost) / (player_cost + ai_cost)
     var did_win = randf() < win_chance
@@ -198,14 +199,6 @@ func build_fleet(faction: String, location: String, ship_type: String, count: in
             "location": location
         })
     return result
-    
-    
-func calculate_fleet_cost(fleet: Array) -> int:
-    var total = 0
-    for ship in fleet:
-        var design = GameData.ship_designs.get(ship.type)
-        total += design.cost_mats + design.cost_pers
-    return total
 
 
 func generate_ai_fleet(max_cost: int) -> Array:

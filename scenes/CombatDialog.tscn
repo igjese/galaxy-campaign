@@ -1,0 +1,60 @@
+[gd_scene load_steps=2 format=3 uid="uid://b5gf5oqku1coh"]
+
+[ext_resource type="Script" uid="uid://mnojp3etgrns" path="res://scenes/combat_dialog.gd" id="1_1kye7"]
+
+[node name="CombatDialog" type="PopupPanel"]
+size = Vector2i(258, 211)
+visible = true
+script = ExtResource("1_1kye7")
+
+[node name="VBox" type="VBoxContainer" parent="."]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 254.0
+offset_bottom = 207.0
+
+[node name="Title" type="Label" parent="VBox"]
+custom_minimum_size = Vector2(250, 30)
+layout_mode = 2
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Fleets" type="HBoxContainer" parent="VBox"]
+layout_mode = 2
+
+[node name="Player" type="Label" parent="VBox/Fleets"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "FF
+DD
+"
+horizontal_alignment = 1
+
+[node name="vs" type="Label" parent="VBox/Fleets"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+text = "vs"
+horizontal_alignment = 1
+
+[node name="AI" type="Label" parent="VBox/Fleets"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+size_flags_horizontal = 3
+horizontal_alignment = 1
+
+[node name="Result" type="Label" parent="VBox"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+
+[node name="Buttons" type="HBoxContainer" parent="VBox"]
+layout_mode = 2
+
+[node name="StartBattle" type="Button" parent="VBox/Buttons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Start Battle"
+
+[node name="Close" type="Button" parent="VBox/Buttons"]
+layout_mode = 2
+size_flags_horizontal = 3
