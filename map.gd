@@ -8,7 +8,7 @@ var system_map = {}
 
 
 func _ready():
-    randomize()
+    seed(123)
     spawn_worlds()
     draw_connections()
     connect_signals()
@@ -135,51 +135,68 @@ func _on_move_queued(from: String, to: String, ships: Dictionary):
 func resolve_pending_moves():
     while GameData.pending_moves.size() > 0:
         var move = GameData.pending_moves.pop_front()
-
-        var from = move.from
-        var to = move.to
-        var ship_type = move.type
-        var count = move.count
-        var indicator = move.indicator
-
-        var to_world = system_map.get(to)
-
-        # Recreate player ships at destination
-        var player_ships = []
-        var player_cost = 0
-
-        for i in range(count):
-            var ship = {
-                "type": ship_type,
-                "faction": "player",
-                "location": to
-            }
-            player_ships.append(ship)
-            var design = GameData.ship_designs.get(ship_type)
-            player_cost += design.cost_mats + design.cost_pers
-
-        GameData.ships += player_ships
-
-        if to_world.faction == "ai":
-            var ai_fleet = generate_ai_fleet(player_cost)
-            var ai_cost = calculate_fleet_cost(ai_fleet)
-            var win_chance = float(player_cost) / (player_cost + ai_cost)
-
-            if randf() < win_chance:
-                to_world.faction = "player"
-                trim_ships(to, int(ai_cost / 2.0))
-                to_world.update_gui()
-                print("✔ Victory at %s! (Lost %d cost worth of ships)" % [to, int(ai_cost / 2.0)])
-            else:
-                GameData.ships = GameData.ships.filter(func(ship):
-                    return not (ship.faction == "player" and ship.location == to)
-                )
-                print("✘ Defeat at %s! All ships lost." % to)
-        else:
-            print("→ Moved to %s without combat" % to)
         move.indicator.queue_free()
+        var to_star = system_map.get(move.to)
+        if to_star.faction == "ai":
+            commence_battle(move)
+        else:
+            transfer_ships_to_destination(move)
+            print("→ Moved to %s without combat" % move.to)
+            
+func commence_battle(move):
+    var player_fleet = build_fleet("player", move.to, move.type, move.count)
+    GameData.ships += player_fleet
+
+    var player_cost = calculate_fleet_cost(player_fleet)
+    var ai_fleet = generate_ai_fleet(player_cost)
+
+    show_combat_dialog(move.from, move.to, player_fleet, ai_fleet)
+
+func show_combat_dialog(from, to, player_fleet, ai_fleet):
+    var player_cost = calculate_fleet_cost(player_fleet)
+    var ai_cost = calculate_fleet_cost(ai_fleet)
+
+    var win_chance = float(player_cost) / (player_cost + ai_cost)
+    var did_win = randf() < win_chance
+
+    if did_win:
+        apply_victory(to, ai_cost / 2.0)
+    else:
+        apply_defeat(to)
+
+    print("--- Combat ---")
+    var win_or_lose = "Victory" if did_win else "Defeat"
+    print("At %s, player cost: %d vs AI cost: %d → %s" %
+        [to, player_cost, ai_cost, win_or_lose ])
+
+func apply_victory(to: String, loss_cost: float):
+    var star = system_map[to]
+    star.faction = "player"
+    trim_ships(to, int(loss_cost))
+    star.update_gui()
+    print("✔ Victory at %s!" % to)
 
 
+func apply_defeat(to: String):
+    GameData.ships = GameData.ships.filter(func(ship):
+        return not (ship.faction == "player" and ship.location == to)
+    )
+    print("✘ Defeat at %s! All ships lost." % to)
+    
+func transfer_ships_to_destination(move):
+    var new_ships = build_fleet("player", move.to, move.type, move.count)
+    GameData.ships += new_ships
+
+func build_fleet(faction: String, location: String, ship_type: String, count: int) -> Array:
+    var result = []
+    for i in count:
+        result.append({
+            "type": ship_type,
+            "faction": faction,
+            "location": location
+        })
+    return result
+    
 func calculate_fleet_cost(fleet: Array) -> int:
     var total = 0
     for ship in fleet:
