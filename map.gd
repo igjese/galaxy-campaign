@@ -168,11 +168,6 @@ func show_combat_dialog(from, to, player_fleet, ai_fleet):
     else:
         apply_defeat(to)
 
-    print("--- Combat ---")
-    var win_or_lose = "Victory" if did_win else "Defeat"
-    print("At %s, player cost: %d vs AI cost: %d → %s" %
-        [to, player_cost, ai_cost, win_or_lose ])
-
 
 func apply_victory(to: String, loss_cost: float):
     var star = system_map[to]
