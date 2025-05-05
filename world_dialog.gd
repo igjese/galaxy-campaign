@@ -28,10 +28,13 @@ func prepare_for_world(world_node):
     world = world_node
     $VBox/WorldName.text = "%s" % world_node.world_name
 
-    for line in line_container.get_children():
-        line.reset()  # you'll add this method to set count = 0
-        ship_order[line.id] = 0
-
+    var can_build = world.has_shipyard
+    $VBox/Mode/Shipyard.visible = can_build
+    
+    # Default to MOVE mode if no shipyard
+    current_mode = Mode.BUILD if can_build else Mode.MOVE
+    switch_mode_for_lines()
+    update_gui()
     popup_centered()
 
 

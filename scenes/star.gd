@@ -80,6 +80,6 @@ func update_gui():
 
     
 func _on_system_pressed():
-    if not has_shipyard:
+    if faction != "player":
         return
     GameData.open_build_dialog_for(self)
