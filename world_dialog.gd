@@ -142,32 +142,9 @@ func _on_move(id: int):
     queue_move(destination)
     hide()
     
+    
 func queue_move(destination):
-    # Queue each group of ships by type
-    for ship_type in ship_order.keys():
-        var count = ship_order[ship_type]
-        if count == 0:
-            continue
-
-        GameData.pending_moves.append({
-            "type": ship_type,
-            "count": count,
-            "from": world.world_name,
-            "to": destination
-        })
-
-        # Remove moved ships from GameData.ships (real removal)
-        var to_remove := []
-        for ship in GameData.ships:
-            if ship.faction == "player" and ship.location == world.world_name and ship.type == ship_type:
-                to_remove.append(ship)
-                if to_remove.size() == count:
-                    break
-        for ship in to_remove:
-            GameData.ships.erase(ship)
-
     emit_signal("move_queued", world.world_name, destination, ship_order)
-
 
 
 func populate_move_destinations():

@@ -59,6 +59,7 @@ func _on_end_turn_pressed():
 func end_turn():
     GameData.turn += 1
     collect_resources()
+    resolve_pending_moves()
     update_gui()
     
     
@@ -105,4 +106,112 @@ func _on_move_queued(from: String, to: String, ships: Dictionary):
     var indicator = move_indicator_scene.instantiate()
     indicator.setup(from_star.global_position, to_star.global_position, label.strip_edges())
     $PendingMoves.add_child(indicator)
+        
+    # Queue each group of ships by type
+    for ship_type in ships.keys():
+        var count = ships[ship_type]
+        if count == 0:
+            continue
+
+        GameData.pending_moves.append({
+            "type": ship_type,
+            "count": count,
+            "from": from,
+            "to": to,
+            "indicator": indicator
+        })
+
+        # Remove moved ships from GameData.ships (real removal)
+        var to_remove := []
+        for ship in GameData.ships:
+            if ship.faction == "player" and ship.location == from and ship.type == ship_type:
+                to_remove.append(ship)
+                if to_remove.size() == count:
+                    break
+        for ship in to_remove:
+            GameData.ships.erase(ship)
     update_gui()
+
+func resolve_pending_moves():
+    while GameData.pending_moves.size() > 0:
+        var move = GameData.pending_moves.pop_front()
+
+        var from = move.from
+        var to = move.to
+        var ship_type = move.type
+        var count = move.count
+        var indicator = move.indicator
+
+        var to_world = system_map.get(to)
+
+        # Recreate player ships at destination
+        var player_ships = []
+        var player_cost = 0
+
+        for i in range(count):
+            var ship = {
+                "type": ship_type,
+                "faction": "player",
+                "location": to
+            }
+            player_ships.append(ship)
+            var design = GameData.ship_designs.get(ship_type)
+            player_cost += design.cost_mats + design.cost_pers
+
+        GameData.ships += player_ships
+
+        if to_world.faction == "ai":
+            var ai_fleet = generate_ai_fleet(player_cost)
+            var ai_cost = calculate_fleet_cost(ai_fleet)
+            var win_chance = float(player_cost) / (player_cost + ai_cost)
+
+            if randf() < win_chance:
+                to_world.faction = "player"
+                trim_ships(to, int(ai_cost / 2.0))
+                to_world.update_gui()
+                print("✔ Victory at %s! (Lost %d cost worth of ships)" % [to, int(ai_cost / 2.0)])
+            else:
+                GameData.ships = GameData.ships.filter(func(ship):
+                    return not (ship.faction == "player" and ship.location == to)
+                )
+                print("✘ Defeat at %s! All ships lost." % to)
+        else:
+            print("→ Moved to %s without combat" % to)
+        move.indicator.queue_free()
+
+
+func calculate_fleet_cost(fleet: Array) -> int:
+    var total = 0
+    for ship in fleet:
+        var design = GameData.ship_designs.get(ship.type)
+        total += design.cost_mats + design.cost_pers
+    return total
+
+
+func generate_ai_fleet(max_cost: int) -> Array:
+    var fleet = []
+    var types = GameData.ship_designs.keys()
+    while max_cost > 0:
+        var type = types[randi() % types.size()]
+        var design = GameData.ship_designs.get(type)
+        var cost = design.cost_mats + design.cost_pers
+        if cost <= max_cost:
+            fleet.append({ "type": type })
+            max_cost -= cost
+        else:
+            break
+    return fleet
+
+
+func trim_ships(location: String, loss_cost: int):
+    var removed_cost = 0
+    var survivors = []
+
+    for ship in GameData.ships:
+        if ship.faction == "player" and ship.location == location and removed_cost < loss_cost:
+            var design = GameData.ship_designs.get(ship.type)
+            removed_cost += design.cost_mats + design.cost_pers
+            continue  # skip adding this ship
+        survivors.append(ship)
+
+    GameData.ships = survivors
