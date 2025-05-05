@@ -58,3 +58,7 @@ text = "Start Battle"
 [node name="Close" type="Button" parent="VBox/Buttons"]
 layout_mode = 2
 size_flags_horizontal = 3
+text = "Close"
+
+[connection signal="pressed" from="VBox/Buttons/StartBattle" to="." method="_on_start_battle_pressed"]
+[connection signal="pressed" from="VBox/Buttons/Close" to="." method="_on_close_pressed"]

@@ -35,7 +35,7 @@ func populate_summary(label_node: Label, fleet: Array, faction: String):
     label_node.text = text.strip_edges()
 
 
-func _on_StartBattle_pressed():
+func _on_start_battle_pressed():
     var player_cost = Helpers.calculate_fleet_cost(player_fleet)
     var ai_cost = Helpers.calculate_fleet_cost(ai_fleet)
     var win_chance = float(player_cost) / (player_cost + ai_cost)
@@ -57,5 +57,5 @@ func _on_StartBattle_pressed():
     emit_signal("combat_complete", did_win, location, loss_cost)
 
 
-func _on_Close_pressed():
+func _on_close_pressed():
     hide()

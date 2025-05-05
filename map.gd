@@ -18,6 +18,7 @@ func _ready():
 func connect_signals():
     $UI/WorldDialog.connect("ships_built", Callable(self, "update_gui"))
     $UI/WorldDialog.connect("move_queued", Callable(self, "_on_move_queued"))
+    $UI/CombatDialog.connect("combat_complete", Callable(self, "_on_combat_complete"))
 
 
 func spawn_worlds():
@@ -157,19 +158,6 @@ func commence_battle(move):
     combat_dialog.open(move.to, player_fleet, ai_fleet)
 
 
-func show_combat_dialog(from, to, player_fleet, ai_fleet):
-    var player_cost = Helpers.calculate_fleet_cost(player_fleet)
-    var ai_cost = Helpers.calculate_fleet_cost(ai_fleet)
-
-    var win_chance = float(player_cost) / (player_cost + ai_cost)
-    var did_win = randf() < win_chance
-
-    if did_win:
-        apply_victory(to, ai_cost / 2.0)
-    else:
-        apply_defeat(to)
-
-
 func apply_victory(to: String, loss_cost: float):
     var star = system_map[to]
     star.faction = "player"
@@ -228,3 +216,11 @@ func trim_ships(location: String, loss_cost: int):
         survivors.append(ship)
 
     GameData.ships = survivors
+
+func _on_combat_complete(did_win: bool, location: String, loss_cost: int):
+    if did_win:
+        apply_victory(location, loss_cost)
+    else:
+        apply_defeat(location)
+
+    update_gui()
