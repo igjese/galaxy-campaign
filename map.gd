@@ -93,6 +93,7 @@ func update_resource_totals():
         GameData.player_personnel
     ]
 
+
 func _on_move_queued(from: String, to: String, ships: Dictionary):
     var from_star = system_map.get(from)
     var to_star = system_map.get(to)
@@ -132,6 +133,7 @@ func _on_move_queued(from: String, to: String, ships: Dictionary):
             GameData.ships.erase(ship)
     update_gui()
 
+
 func resolve_pending_moves():
     while GameData.pending_moves.size() > 0:
         var move = GameData.pending_moves.pop_front()
@@ -143,6 +145,7 @@ func resolve_pending_moves():
             transfer_ships_to_destination(move)
             print("→ Moved to %s without combat" % move.to)
             
+            
 func commence_battle(move):
     var player_fleet = build_fleet("player", move.to, move.type, move.count)
     GameData.ships += player_fleet
@@ -151,6 +154,7 @@ func commence_battle(move):
     var ai_fleet = generate_ai_fleet(player_cost)
 
     show_combat_dialog(move.from, move.to, player_fleet, ai_fleet)
+
 
 func show_combat_dialog(from, to, player_fleet, ai_fleet):
     var player_cost = calculate_fleet_cost(player_fleet)
@@ -169,6 +173,7 @@ func show_combat_dialog(from, to, player_fleet, ai_fleet):
     print("At %s, player cost: %d vs AI cost: %d → %s" %
         [to, player_cost, ai_cost, win_or_lose ])
 
+
 func apply_victory(to: String, loss_cost: float):
     var star = system_map[to]
     star.faction = "player"
@@ -183,9 +188,11 @@ func apply_defeat(to: String):
     )
     print("✘ Defeat at %s! All ships lost." % to)
     
+    
 func transfer_ships_to_destination(move):
     var new_ships = build_fleet("player", move.to, move.type, move.count)
     GameData.ships += new_ships
+
 
 func build_fleet(faction: String, location: String, ship_type: String, count: int) -> Array:
     var result = []
@@ -196,6 +203,7 @@ func build_fleet(faction: String, location: String, ship_type: String, count: in
             "location": location
         })
     return result
+    
     
 func calculate_fleet_cost(fleet: Array) -> int:
     var total = 0
