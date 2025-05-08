@@ -19,6 +19,8 @@ func connect_signals():
     $UI/WorldDialog.connect("ships_built", Callable(self, "update_gui"))
     $UI/WorldDialog.connect("move_queued", Callable(self, "_on_move_queued"))
     $UI/CombatDialog.connect("combat_complete", Callable(self, "_on_combat_complete"))
+    for world in system_map.values():
+        world.connect("world_pressed", Callable(self, "_on_world_pressed"))
 
 
 func spawn_worlds():
@@ -95,23 +97,17 @@ func update_resource_totals():
     ]
 
 
-func _on_move_queued(from: String, to: String, ships: Dictionary):
+func _on_move_queued(from: String, to: String, ships: ShipGroup):
     var from_star = system_map.get(from)
     var to_star = system_map.get(to)
 
-    var label = ""
-    for type in ships.keys():
-        var count = ships[type]
-        if count > 0:
-            label += "%s:%d  " % [type, count]
-
     var indicator = move_indicator_scene.instantiate()
-    indicator.setup(from_star.global_position, to_star.global_position, label.strip_edges())
+    indicator.setup(from_star.global_position, to_star.global_position, ships.text())
     $PendingMoves.add_child(indicator)
         
     # Queue each group of ships by type
-    for ship_type in ships.keys():
-        var count = ships[ship_type]
+    for ship_type in ships.counts.keys():
+        var count = ships.counts[ship_type]
         if count == 0:
             continue
 
@@ -158,19 +154,30 @@ func commence_battle(move):
     combat_dialog.open(move.to, player_fleet, ai_fleet)
 
 
-func apply_victory(to: String, loss_cost: float):
+func apply_victory(to: String, lost_ships: Dictionary):
     var star = system_map[to]
     star.faction = "player"
-    trim_ships(to, int(loss_cost))
+    remove_lost_ships(to, lost_ships)
     star.update_gui()
     print("✔ Victory at %s!" % to)
 
-
-func apply_defeat(to: String):
-    GameData.ships = GameData.ships.filter(func(ship):
-        return not (ship.faction == "player" and ship.location == to)
-    )
+func apply_defeat(to: String, lost_ships: Dictionary):
+    remove_lost_ships(to, lost_ships)
     print("✘ Defeat at %s! All ships lost." % to)
+
+func remove_lost_ships(location: String, losses: Dictionary):
+    var survivors = []
+
+    for ship in GameData.ships:
+        if ship.faction == "player" and ship.location == location:
+            var type = ship.type
+            if losses.has(type) and losses[type] > 0:
+                losses[type] -= 1
+                continue  # this one is lost
+        survivors.append(ship)
+
+    GameData.ships = survivors
+
     
     
 func transfer_ships_to_destination(move):
@@ -217,10 +224,27 @@ func trim_ships(location: String, loss_cost: int):
 
     GameData.ships = survivors
 
-func _on_combat_complete(did_win: bool, location: String, loss_cost: int):
+func _on_combat_complete(did_win: bool, location: String, lost_ships: Dictionary):
     if did_win:
-        apply_victory(location, loss_cost)
+        apply_victory(location, lost_ships)
     else:
-        apply_defeat(location)
+        apply_defeat(location, lost_ships)
 
     update_gui()
+
+
+func open_build_dialog_for(world_node):
+    GameData.selected_world = world_node
+    var dialog = get_tree().get_root().get_node("Map/UI/WorldDialog")
+    dialog.popup_centered()
+    dialog.prepare_for_world(world_node)
+
+
+func _on_world_pressed(world_node):
+    if world_node.faction != "player":
+        return
+    var has_ships = GameData.ships.any(func(s): return s.location == world_node.world_name and s.faction == "player")
+    if world_node.has_shipyard or has_ships:
+        GameData.selected_world = world_node
+        $UI/WorldDialog.prepare_for_world(world_node)
+        $UI/WorldDialog.popup_centered()

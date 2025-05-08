@@ -4,28 +4,27 @@ extends PopupPanel
 @onready var line_scene = preload("res://scenes/LineIncrement.tscn")
 
 var world = null
-var ship_order = {}
+var ship_order: ShipGroup
 
 enum Mode { BUILD, MOVE }
 var current_mode = Mode.BUILD
 
 signal ships_built
-signal move_queued(from: String, to: String, ships: Dictionary)
+signal move_queued(from: String, to: String, ships: ShipGroup)
 
 
 func _ready():
-    ship_order.clear()
     for hull in GameData.ship_designs.keys():
         var line = line_scene.instantiate()
         line.setup(hull)
         line.connect("count_changed", Callable(self, "_on_line_updated"))
         line_container.add_child(line)
-        ship_order[hull] = 0
         $VBox/Cmd/Move.get_popup().connect("id_pressed", Callable(self, "_on_move"))
 
 
 func prepare_for_world(world_node):
     world = world_node
+    ship_order = ShipGroup.new()
     $VBox/WorldName.text = "%s" % world_node.world_name
 
     var can_build = world.has_shipyard
@@ -39,7 +38,7 @@ func prepare_for_world(world_node):
 
 
 func _on_line_updated(id: String, count: int):
-    ship_order[id] = count
+    ship_order.set_count(id, count)
     update_gui()
 
 
@@ -48,30 +47,20 @@ func update_gui():
     $VBox/Mode/Shipyard.button_pressed = (current_mode == Mode.BUILD)
     $VBox/Mode/Fleets.button_pressed = (current_mode == Mode.MOVE)
 
-    # Common UI logic
-    var total_mats = 0
-    var total_pers = 0
-    var total_ships = 0
-
-    for id in ship_order.keys():
-        var count = ship_order[id]
-        total_ships += count
-
-        if current_mode == Mode.BUILD:
-            var design = GameData.ship_designs.get(id)
-            if design:
-                total_mats += design.cost_mats * count
-                total_pers += design.cost_pers * count
-                
+    # Calculate common info
+    var total_ships = ship_order.total_count()
+    var cost = ship_order.cost()
+    
+    # Toggle visibility
     $VBox/Cmd/Build.visible = (current_mode == Mode.BUILD)
     $VBox/Cmd/All.visible = (current_mode == Mode.MOVE)
     $VBox/Cmd/Move.visible = (current_mode == Mode.MOVE)
 
     if current_mode == Mode.BUILD:
-        $VBox/Summary.text = "Total: %dM  %dP" % [total_mats, total_pers]
+        $VBox/Summary.text = "Total: %dM  %dP" % [cost["mats"], cost["pers"]]
         $VBox/Cmd/Build.disabled = (
-            total_mats > GameData.player_materials or
-            total_pers > GameData.player_personnel or
+            cost["mats"] > GameData.player_materials or
+            cost["pers"] > GameData.player_personnel or
             total_ships == 0
         )
     elif current_mode == Mode.MOVE:
@@ -85,42 +74,36 @@ func _on_clear_pressed():
     
     
 func clear_line_items():
+    ship_order.clear()
     for line in line_container.get_children():
         if line is LineIncrement:
             line.reset()
-            ship_order[line.id] = 0
     update_gui()
 
 
 func _on_build_pressed():
-    for id in ship_order.keys():
-        var count = ship_order[id]
-        if count == 0:
-            continue
+    # Calculate total cost using ShipGroup
+    var cost = ship_order.cost()
+    if GameData.player_materials < cost["mats"] or GameData.player_personnel < cost["pers"]:
+        print("Not enough resources.")
+        return
 
-        var design = GameData.ship_designs.get(id)
-        var cost_m = design.cost_mats * count
-        var cost_p = design.cost_pers * count
+    # Deduct resources
+    GameData.player_materials -= cost["mats"]
+    GameData.player_personnel -= cost["pers"]
 
-        # Skip if insufficient resources
-        if GameData.player_materials < cost_m or GameData.player_personnel < cost_p:
-            print("Not enough resources to build %s" % id)
-            continue
-
-        # Deduct resources
-        GameData.player_materials -= cost_m
-        GameData.player_personnel -= cost_p
-
-        # Create ship records
+    # Create ships
+    for type in ship_order.counts.keys():
+        var count = ship_order.counts[type]
         for i in count:
             GameData.ships.append({
-                "type": id,
+                "type": type,
                 "location": world.world_name,
                 "faction": "player"
             })
-
     hide()
     emit_signal("ships_built")
+
 
 
 func _on_shipyard_pressed():

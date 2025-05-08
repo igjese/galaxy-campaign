@@ -38,23 +38,31 @@ func populate_summary(label_node: Label, fleet: Array, faction: String):
 func _on_start_battle_pressed():
     var player_cost = Helpers.calculate_fleet_cost(player_fleet)
     var ai_cost = Helpers.calculate_fleet_cost(ai_fleet)
-    var win_chance = float(player_cost) / (player_cost + ai_cost)
+    var win_chance = float(player_cost) / (player_cost + ai_cost) * 1.2
     var did_win = randf() < win_chance
-    var loss_cost = int(ai_cost / 2.0)
-
     var result_text := ""
+
+    var lost_ships := {}
+
     if did_win:
-        result_text = "✔ Victory!\nLost %d cost worth of ships." % loss_cost
+        var loss_cost = int(ai_cost / 2.0)
+        lost_ships = Helpers.calculate_loss_by_cost(player_fleet, loss_cost)
+        var summary = Helpers.summarize_fleet(lost_ships)
+        result_text = "✔ Victory!\nLost ships: %s" % (summary if summary != "" else "none")
+
     else:
+        # Convert player_fleet array to a summary dict
+        for ship in player_fleet:
+            lost_ships[ship.type] = lost_ships.get(ship.type, 0) + 1
         result_text = "✘ Defeat!\nAll ships were destroyed."
 
     $VBox/Result.text = result_text
-
-    # Hide battle button, show only Close
     $VBox/Buttons/StartBattle.visible = false
     $VBox/Buttons/Close.visible = true
 
-    emit_signal("combat_complete", did_win, location, loss_cost)
+    emit_signal("combat_complete", did_win, location, lost_ships)
+
+
 
 
 func _on_close_pressed():

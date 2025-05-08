@@ -6,3 +6,29 @@ func calculate_fleet_cost(fleet: Array) -> int:
         var design = GameData.ship_designs.get(ship.type)
         total += design.cost_mats + design.cost_pers
     return total
+
+
+func calculate_loss_by_cost(fleet: Array, max_cost: int) -> Dictionary:
+    var summary := {}
+    var used = 0
+
+    for ship in fleet:
+        var cost = Helpers.cost_of(ship.type)
+        if used + cost > max_cost:
+            break
+        used += cost
+        summary[ship.type] = summary.get(ship.type, 0) + 1
+
+    return summary
+
+
+func summarize_fleet(fleet: Dictionary) -> String:
+    var parts := []
+    for type in fleet.keys():
+        parts.append("%s:%d" % [type, fleet[type]])
+    return ", ".join(parts)
+
+
+func cost_of(type: String) -> int:
+    var design = GameData.ship_designs.get(type)
+    return design.cost_mats + design.cost_pers

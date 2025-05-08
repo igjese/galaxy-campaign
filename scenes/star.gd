@@ -7,11 +7,7 @@ extends Node2D
 @export var faction: String = "ai"  # default to AI-owned
 @export var has_shipyard: bool = false
 
-var ships = {
-    "FF": 0,
-    "DD": 0
-}
-
+signal world_pressed(world_node)
 
 @onready var name_label = $SystemNode/Name
 @onready var info_label = $SystemNode/Info
@@ -63,13 +59,11 @@ func update_gui():
     # ships owned by player
     var ship_text := ""
     if faction == "player":
-        var ship_counts := {}
-        for ship in GameData.ships:
-            if ship.location == world_name and ship.faction == "player":
-                ship_counts[ship.type] = ship_counts.get(ship.type, 0) + 1
-
-        for type in ship_counts.keys():
-            ship_text += "%s:%d " % [type, ship_counts[type]]
+        var local_ships = GameData.ships.filter(
+            func(s): return (s.location == world_name and s.faction == "player")
+        )
+        var group = ShipGroup.new_from_fleet(local_ships)
+        ship_text = group.text()
     ships_label.text = ship_text
     
     # all info colored per faction
@@ -80,6 +74,4 @@ func update_gui():
 
     
 func _on_system_pressed():
-    if faction != "player":
-        return
-    GameData.open_build_dialog_for(self)
+    emit_signal("world_pressed", self)
