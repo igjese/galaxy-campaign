@@ -46,7 +46,7 @@ func change_state(new_state: int):
 
 
 func begin_setup():
-    map = get_tree().get_root().get_node("Map")
+    map = get_tree().get_root().get_node("Main/Map")
     combat_dialog = map.get_node("UI/CombatDialog")
 
 
