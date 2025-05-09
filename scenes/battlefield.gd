@@ -21,6 +21,7 @@ func spawn_fleet(ship_group: ShipGroup, parent: Node, is_ai: bool):
             ship.set_type(ship_type, is_ai)
             ship.position = get_random_spawn_position(x_base)
             ship.rotation_degrees = -90 if is_ai else 90
+            ship.modulate = Color.LIGHT_CORAL if is_ai else Color.LIGHT_GREEN
             parent.add_child(ship)
 
 
