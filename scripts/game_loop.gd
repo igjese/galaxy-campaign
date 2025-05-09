@@ -137,6 +137,7 @@ func simulate_battle():
     else:
         lost_ships = player_fleet
         result_text = "✘ Defeat!\nAll ships were destroyed."
+    print("%s (chances: %f, roll: %f)" % [result_text, win_chance, roll])
     return { "did_win": did_win, "lost_ships": lost_ships }
 
 

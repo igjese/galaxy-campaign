@@ -57,3 +57,10 @@ func subtract(other: ShipGroup):
             counts[type] = remaining
         else:
             counts.erase(type)
+
+
+func duplicate() -> ShipGroup:
+    var new_group := ShipGroup.new()
+    for type in counts.keys():
+        new_group.counts[type] = counts[type]
+    return new_group

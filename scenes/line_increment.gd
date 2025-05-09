@@ -36,7 +36,6 @@ func reset():
 
 func update_gui():
     $Qty.text = str(count)
-
     if current_mode == Mode.BUILD:  
         $Info.text = "Cost: %dM %dP" % [cost_mats * count, cost_pers * count]
         $Increase.disabled = false
@@ -46,7 +45,6 @@ func update_gui():
         $Info.text = "%d available" % available
         $Increase.disabled = (available == 0 or count >= available)
         $Decrease.disabled = (count == 0)
-
     emit_signal("count_changed", id, count)
 
 func _on_decrease_pressed():

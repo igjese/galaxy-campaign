@@ -19,7 +19,7 @@ func _ready():
         line.setup(hull)
         line.connect("count_changed", Callable(self, "_on_line_updated"))
         line_container.add_child(line)
-        $VBox/Cmd/Move.get_popup().connect("id_pressed", Callable(self, "_on_move"))
+        $VBox/Cmd/Move.get_popup().connect("id_pressed", Callable(self, "_on_move_pressed"))
 
 
 func prepare_for_world(world_node):
@@ -73,6 +73,7 @@ func clear_line_items():
     for line in line_container.get_children():
         if line is LineIncrement:
             line.reset()
+            line.update_gui()
     update_gui()
 
 
@@ -94,9 +95,8 @@ func _on_build_pressed():
                 "location": world.world_name,
                 "faction": "player"
             })
-    hide()
+    clear_line_items()
     emit_signal("ships_built")
-
 
 
 func _on_shipyard_pressed():
@@ -116,10 +116,11 @@ func switch_mode_for_lines():
         if line is LineIncrement:
             line.set_mode(current_mode)
             
-func _on_move(id: int):
+func _on_move_pressed(id: int):
     var destination = $VBox/Cmd/Move.get_popup().get_item_text(id)
-    emit_signal("move_queued", world.world_name, destination, ship_order)
-    hide()
+    var ships = ship_order.duplicate()
+    clear_line_items()
+    emit_signal("move_queued", world.world_name, destination, ships)
 
 
 func populate_move_destinations():

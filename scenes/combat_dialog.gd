@@ -30,7 +30,8 @@ func _on_start_battle_pressed():
 
 func show_result(result_text):
     $VBox/Result.text = result_text
-
+    $VBox/Buttons/StartBattle.visible = false
+    $VBox/Buttons/Close.visible = true
 
 func _on_close_pressed():
     hide()
