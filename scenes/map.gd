@@ -17,8 +17,8 @@ func _ready():
 
     
 func connect_signals():
-    $UI/WorldDialog.connect("ships_built", Callable(self, "update_gui"))
     $UI/WorldDialog.connect("move_queued", Callable(self, "_on_move_queued"))
+    $UI/WorldDialog.connect("shipyard_order", Callable(GameLoop, "_on_shipyard_order"))
     $UI/CombatDialog.connect("combat_complete", Callable(self, "_on_combat_complete"))
     for world in system_map.values():
         world.connect("world_pressed", Callable(self, "_on_world_pressed"))

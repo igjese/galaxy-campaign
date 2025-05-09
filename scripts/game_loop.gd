@@ -197,6 +197,23 @@ func queue_move(from: String, to: String, ships: ShipGroup, indicator: Node):
                 continue  # ship is in transit
         remaining.append(ship)
     all_ships = remaining
+    map.update_gui()
+
+
+func _on_shipyard_order(location: String, ships: ShipGroup):
+    var cost = ships.cost()
+    player_materials -= cost["mats"]
+    player_personnel -= cost["pers"]
+    # Add ships
+    for ship_type in ships.counts.keys():
+        var count = ships.counts[ship_type]
+        for i in count:
+            all_ships.append({
+                "type": ship_type,
+                "location": location,
+                "faction": "player"
+            })
+    map.update_gui()
 
 
 func collect_resources():

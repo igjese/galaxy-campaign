@@ -11,6 +11,7 @@ var current_mode = Mode.BUILD
 
 signal ships_built
 signal move_queued(from: String, to: String, ships: ShipGroup)
+signal shipyard_order(location: String, ships: ShipGroup)
 
 
 func _ready():
@@ -77,28 +78,6 @@ func clear_line_items():
     update_gui()
 
 
-func _on_build_pressed():
-    # Calculate total cost using ShipGroup
-    var cost = ship_order.cost()
-    if GameLoop.player_materials < cost["mats"] or GameLoop.player_personnel < cost["pers"]:
-        print("Not enough resources.")
-        return
-    # Deduct resources
-    GameLoop.player_materials -= cost["mats"]
-    GameLoop.player_personnel -= cost["pers"]
-    # Create ships
-    for type in ship_order.counts.keys():
-        var count = ship_order.counts[type]
-        for i in count:
-            GameLoop.all_ships.append({
-                "type": type,
-                "location": world.world_name,
-                "faction": "player"
-            })
-    clear_line_items()
-    emit_signal("ships_built")
-
-
 func _on_shipyard_pressed():
     current_mode = Mode.BUILD
     switch_mode_for_lines()
@@ -110,12 +89,20 @@ func _on_fleets_pressed():
     switch_mode_for_lines()
     update_gui()
     
+    
 func switch_mode_for_lines():
     clear_line_items()
     for line in line_container.get_children():
         if line is LineIncrement:
             line.set_mode(current_mode)
             
+            
+func _on_build_pressed():
+    var ships = ship_order.duplicate()
+    clear_line_items()
+    emit_signal("shipyard_order", world.world_name, ships)
+
+
 func _on_move_pressed(id: int):
     var destination = $VBox/Cmd/Move.get_popup().get_item_text(id)
     var ships = ship_order.duplicate()
