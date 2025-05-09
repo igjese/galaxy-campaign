@@ -22,10 +22,7 @@ func open():
 
 
 func populate_summary(label_node: Label, fleet: ShipGroup, faction: String):
-    var text = "%s Fleet:\n" % faction
-    for type in fleet.counts.keys():
-        text += "%s x%d\n" % [type, fleet.counts[type]]
-    label_node.text = text.strip_edges()
+    label_node.text = "%s Fleet:\n%s" % [faction, fleet.text("\n")]
 
 
 func _on_start_battle_pressed():

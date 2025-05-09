@@ -10,13 +10,14 @@ static func new_from_fleet(fleet: Array) -> ShipGroup:
     return group
 
 
-func text() -> String:
+func text(separator: String = " ") -> String:
     if counts.is_empty():
-        return "none"
+        return ""
     var parts = []
     for type in counts.keys():
-        parts.append("%s: %d" % [type, counts[type]])
-    return " ".join(parts)
+        if counts[type] > 0:
+            parts.append("%s: %d" % [type, counts[type]])
+    return separator.join(parts)
 
 
 func cost() -> Dictionary:
@@ -41,6 +42,7 @@ func total_count() -> int:
     for value in counts.values():
         total += value
     return total
+
 
 func clear():
     counts.clear()

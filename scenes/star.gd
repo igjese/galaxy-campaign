@@ -45,7 +45,6 @@ func assign_random_texture():
 func update_gui():
     # world name
     name_label.text = world_name
-
     # world resources
     var info := ""
     if materials > 0:
@@ -55,7 +54,6 @@ func update_gui():
     if personnel > 0:
         info += "%dP" % personnel
     info_label.text = info
-    
     # ships owned by player
     var ship_text := ""
     if faction == "player":
@@ -65,7 +63,6 @@ func update_gui():
         var group = ShipGroup.new_from_fleet(local_ships)
         ship_text = group.text()
     ships_label.text = ship_text
-    
     # all info colored per faction
     var color = Color.LIGHT_GREEN if faction == "player" else Color.LIGHT_CORAL
     name_label.add_theme_color_override("font_color", color)
