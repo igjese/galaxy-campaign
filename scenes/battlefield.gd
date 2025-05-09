@@ -20,6 +20,7 @@ func spawn_fleet(ship_group: ShipGroup, parent: Node, is_ai: bool):
             var ship = ship_scene.instantiate()
             ship.set_type(ship_type, is_ai)
             ship.position = get_random_spawn_position(x_base)
+            ship.rotation_degrees = -90 if is_ai else 90
             parent.add_child(ship)
 
 
