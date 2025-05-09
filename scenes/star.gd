@@ -59,7 +59,7 @@ func update_gui():
     # ships owned by player
     var ship_text := ""
     if faction == "player":
-        var local_ships = GameData.ships.filter(
+        var local_ships = GameLoop.all_ships.filter(
             func(s): return (s.location == world_name and s.faction == "player")
         )
         var group = ShipGroup.new_from_fleet(local_ships)

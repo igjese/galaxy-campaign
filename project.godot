@@ -17,8 +17,9 @@ config/icon="uid://dsljlknkbitdx"
 
 [autoload]
 
-Helpers="*res://helpers.gd"
-GameData="*res://game_data.gd"
+Helpers="*res://scripts/helpers.gd"
+GameData="*res://scripts/game_data.gd"
+GameLoop="*res://scripts/game_loop.gd"
 
 [display]
 

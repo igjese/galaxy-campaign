@@ -59,8 +59,8 @@ func update_gui():
     if current_mode == Mode.BUILD:
         $VBox/Summary.text = "Total: %dM  %dP" % [cost["mats"], cost["pers"]]
         $VBox/Cmd/Build.disabled = (
-            cost["mats"] > GameData.player_materials or
-            cost["pers"] > GameData.player_personnel or
+            cost["mats"] > GameLoop.player_materials or
+            cost["pers"] > GameLoop.player_personnel or
             total_ships == 0
         )
     elif current_mode == Mode.MOVE:
@@ -84,19 +84,19 @@ func clear_line_items():
 func _on_build_pressed():
     # Calculate total cost using ShipGroup
     var cost = ship_order.cost()
-    if GameData.player_materials < cost["mats"] or GameData.player_personnel < cost["pers"]:
+    if GameLoop.player_materials < cost["mats"] or GameLoop.player_personnel < cost["pers"]:
         print("Not enough resources.")
         return
 
     # Deduct resources
-    GameData.player_materials -= cost["mats"]
-    GameData.player_personnel -= cost["pers"]
+    GameLoop.player_materials -= cost["mats"]
+    GameLoop.player_personnel -= cost["pers"]
 
     # Create ships
     for type in ship_order.counts.keys():
         var count = ship_order.counts[type]
         for i in count:
-            GameData.ships.append({
+            GameLoop.all_ships.append({
                 "type": type,
                 "location": world.world_name,
                 "faction": "player"
@@ -125,12 +125,8 @@ func switch_mode_for_lines():
             
 func _on_move(id: int):
     var destination = $VBox/Cmd/Move.get_popup().get_item_text(id)
-    queue_move(destination)
-    hide()
-    
-    
-func queue_move(destination):
     emit_signal("move_queued", world.world_name, destination, ship_order)
+    hide()
 
 
 func populate_move_destinations():

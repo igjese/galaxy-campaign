@@ -61,7 +61,7 @@ func _on_increase_pressed():
 
 func hulls_available(hull: String) -> int:
     var count = 0
-    for ship in GameData.ships:
-        if ship.faction == "player" and ship.location == GameData.selected_world.world_name and ship.type == hull:
+    for ship in GameLoop.all_ships:
+        if ship.faction == "player" and ship.location == GameLoop.selected_world.world_name and ship.type == hull:
             count += 1
     return count

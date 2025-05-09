@@ -31,8 +31,10 @@ func cost() -> Dictionary:
         "pers": pers
     }
 
+
 func set_count(type: String, count: int) -> void:
     counts[type] = count
+
 
 func total_count() -> int:
     var total = 0
@@ -42,3 +44,14 @@ func total_count() -> int:
 
 func clear():
     counts.clear()
+
+
+func subtract(other: ShipGroup):
+    for type in other.counts.keys():
+        var original = counts.get(type, 0)
+        var to_remove = other.counts[type]
+        var remaining = original - to_remove
+        if remaining > 0:
+            counts[type] = remaining
+        else:
+            counts.erase(type)

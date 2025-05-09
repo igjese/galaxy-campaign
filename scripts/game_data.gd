@@ -1,15 +1,5 @@
 extends Node
 
-var turn := 1
-var player_materials := 10
-var player_supply := 10
-var player_personnel := 10
-
-var selected_world = null
-var ships = []  # each ship is a dict or lightweight object
-var pending_moves = []  # each move = { type, count, from, to }
-
-
 var worlds = {
     "Velthara": {
         "position": Vector2(200, 400),

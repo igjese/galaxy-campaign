@@ -1,12 +1,12 @@
 [gd_scene load_steps=5 format=3 uid="uid://dbkbcp753u33p"]
 
-[ext_resource type="Script" uid="uid://d0emdqkydvqc2" path="res://map.gd" id="1_gqbix"]
-[ext_resource type="Texture2D" uid="uid://fgaapbg5fdsi" path="res://assets/map-background.png" id="2_wijl4"]
-[ext_resource type="Script" uid="uid://embxqtjdjepy" path="res://scenes/world_dialog.gd" id="3_e0an3"]
-[ext_resource type="PackedScene" uid="uid://b5gf5oqku1coh" path="res://scenes/CombatDialog.tscn" id="4_p5pve"]
+[ext_resource type="Script" uid="uid://d0emdqkydvqc2" path="res://scenes/map.gd" id="1_0cso3"]
+[ext_resource type="Texture2D" uid="uid://fgaapbg5fdsi" path="res://assets/map-background.png" id="2_2klcf"]
+[ext_resource type="Script" uid="uid://embxqtjdjepy" path="res://scenes/world_dialog.gd" id="3_2lpho"]
+[ext_resource type="PackedScene" uid="uid://b5gf5oqku1coh" path="res://scenes/CombatDialog.tscn" id="4_nakos"]
 
 [node name="Map" type="Node2D"]
-script = ExtResource("1_gqbix")
+script = ExtResource("1_0cso3")
 
 [node name="Background" type="TextureRect" parent="."]
 anchors_preset = 15
@@ -16,7 +16,7 @@ offset_right = 1440.0
 offset_bottom = 900.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("2_wijl4")
+texture = ExtResource("2_2klcf")
 expand_mode = 2
 
 [node name="ConnectionLines" type="Line2D" parent="."]
@@ -58,7 +58,7 @@ text = "Turn: 1"
 
 [node name="WorldDialog" type="PopupPanel" parent="UI"]
 size = Vector2i(109, 102)
-script = ExtResource("3_e0an3")
+script = ExtResource("3_2lpho")
 
 [node name="VBox" type="VBoxContainer" parent="UI/WorldDialog"]
 offset_left = 4.0
@@ -116,7 +116,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Move..."
 
-[node name="CombatDialog" parent="UI" instance=ExtResource("4_p5pve")]
+[node name="CombatDialog" parent="UI" instance=ExtResource("4_nakos")]
 visible = false
 
 [connection signal="pressed" from="UI/EndTurn" to="." method="_on_end_turn_pressed"]
