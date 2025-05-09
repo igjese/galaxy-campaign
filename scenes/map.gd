@@ -10,7 +10,7 @@ var current_battle_move = null
 
 
 func _ready():
-    seed(1234)
+    seed(GameLoop.seed)
     spawn_worlds()
     draw_connections()
     connect_signals()

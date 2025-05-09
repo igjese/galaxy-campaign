@@ -10,6 +10,8 @@ var combat_dialog: Node = null
 var pending_moves: Array = []
 var current_move = null
 
+var seed = 1234
+
 var turn := 1
 var player_materials := 10
 var player_supply := 10
