@@ -198,6 +198,7 @@ func queue_move(from: String, to: String, ships: ShipGroup, indicator: Node):
         remaining.append(ship)
     all_ships = remaining
     map.update_gui()
+    map.get_node("UI/WorldDialog").clear_line_items()
 
 
 func _on_shipyard_order(location: String, ships: ShipGroup):
