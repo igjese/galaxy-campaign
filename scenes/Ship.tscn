@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://4youx0rk83mx"]
+
+[ext_resource type="Texture2D" uid="uid://b6csux6cbp0ku" path="res://assets/ships/FF.png" id="1_gjfe0"]
+[ext_resource type="Texture2D" uid="uid://b1ofuw6lxw84s" path="res://assets/ships/exhaust.png" id="2_qq457"]
+
+[node name="Ship" type="Node2D"]
+
+[node name="Ship" type="Sprite2D" parent="."]
+texture = ExtResource("1_gjfe0")
+
+[node name="Exhaust" type="Sprite2D" parent="."]
+position = Vector2(8.9407e-07, 120)
+scale = Vector2(1.44444, 1)
+texture = ExtResource("2_qq457")
