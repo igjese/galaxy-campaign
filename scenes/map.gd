@@ -5,8 +5,6 @@ extends Node2D
 @onready var move_indicator_scene = preload("res://scenes/MoveIndicator.tscn")
 
 var system_map = {}
-var current_battle_move = null
-
 
 
 func _ready():
@@ -59,14 +57,6 @@ func _on_end_turn_pressed():
     GameLoop.change_state(GameLoop.GameState.END_TURN)
     
     
-func collect_resources():
-    for star in system_map.values():
-        if star.faction == "player":
-            GameLoop.player_materials += star.materials
-            GameLoop.player_supply += star.supply
-            GameLoop.player_personnel += star.personnel
-    
-    
 func update_gui():
     update_turn()
     update_resource_totals()
@@ -98,13 +88,6 @@ func _on_move_queued(from: String, to: String, ships: ShipGroup):
     $PendingMoves.add_child(indicator)
     GameLoop.queue_move(from, to, ships, indicator)
     update_gui()
-
-
-func open_build_dialog_for(world_node):
-    GameLoop.selected_world = world_node
-    var dialog = get_tree().get_root().get_node("Map/UI/WorldDialog")
-    dialog.popup_centered()
-    dialog.prepare_for_world(world_node)
 
 
 func _on_world_pressed(world_node):

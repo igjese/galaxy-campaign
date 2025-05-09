@@ -26,10 +26,8 @@ func prepare_for_world(world_node):
     world = world_node
     ship_order = ShipGroup.new()
     $VBox/WorldName.text = "%s" % world_node.world_name
-
     var can_build = world.has_shipyard
     $VBox/Mode/Shipyard.visible = can_build
-    
     # Default to MOVE mode if no shipyard
     current_mode = Mode.BUILD if can_build else Mode.MOVE
     switch_mode_for_lines()
@@ -46,16 +44,13 @@ func update_gui():
     # Sync button state
     $VBox/Mode/Shipyard.button_pressed = (current_mode == Mode.BUILD)
     $VBox/Mode/Fleets.button_pressed = (current_mode == Mode.MOVE)
-
     # Calculate common info
     var total_ships = ship_order.total_count()
     var cost = ship_order.cost()
-    
     # Toggle visibility
     $VBox/Cmd/Build.visible = (current_mode == Mode.BUILD)
     $VBox/Cmd/All.visible = (current_mode == Mode.MOVE)
     $VBox/Cmd/Move.visible = (current_mode == Mode.MOVE)
-
     if current_mode == Mode.BUILD:
         $VBox/Summary.text = "Total: %dM  %dP" % [cost["mats"], cost["pers"]]
         $VBox/Cmd/Build.disabled = (
@@ -87,11 +82,9 @@ func _on_build_pressed():
     if GameLoop.player_materials < cost["mats"] or GameLoop.player_personnel < cost["pers"]:
         print("Not enough resources.")
         return
-
     # Deduct resources
     GameLoop.player_materials -= cost["mats"]
     GameLoop.player_personnel -= cost["pers"]
-
     # Create ships
     for type in ship_order.counts.keys():
         var count = ship_order.counts[type]

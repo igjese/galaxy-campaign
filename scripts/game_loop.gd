@@ -52,7 +52,7 @@ func begin_setup():
 
 func begin_start_turn():
     turn += 1
-    map.collect_resources()
+    collect_resources()
     map.update_gui()
     change_state(GameState.IDLE)
     
@@ -196,3 +196,12 @@ func queue_move(from: String, to: String, ships: ShipGroup, indicator: Node):
                 continue  # ship is in transit
         remaining.append(ship)
     all_ships = remaining
+
+
+func collect_resources():
+    for star in map.system_map.values():
+        if star.faction == "player":
+            player_materials += star.materials
+            player_supply += star.supply
+            player_personnel += star.personnel
+    
