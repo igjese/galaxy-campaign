@@ -7,7 +7,7 @@
 [node name="Ship" type="Node2D"]
 script = ExtResource("1_qq457")
 
-[node name="Ship" type="Sprite2D" parent="."]
+[node name="Hull" type="Sprite2D" parent="."]
 texture = ExtResource("1_gjfe0")
 
 [node name="Exhaust" type="Sprite2D" parent="."]

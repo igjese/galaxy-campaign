@@ -17,6 +17,7 @@ config/icon="uid://dsljlknkbitdx"
 
 [autoload]
 
+Yaml="*res://scripts/yaml_parser.gd"
 Helpers="*res://scripts/helpers.gd"
 GameData="*res://scripts/game_data.gd"
 GameLoop="*res://scripts/game_loop.gd"
