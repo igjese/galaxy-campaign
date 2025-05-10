@@ -1,0 +1,8 @@
+- seek_and_destroy:
+    priority: 80
+    actions:
+        - name: go_then_shoot
+        cost: 1
+        execute:
+            - move_to_enemy
+            - fire_at_enemy

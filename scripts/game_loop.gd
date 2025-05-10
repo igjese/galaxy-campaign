@@ -20,6 +20,8 @@ var player_personnel := 10
 var selected_world = null
 var all_ships = []  # each ship is a dict or lightweight object
 
+var goal_defs = {}
+
 
 func change_state(new_state: int):
     print("State: %s to %s" % [states[state], states[new_state]])
@@ -48,7 +50,8 @@ func change_state(new_state: int):
 func begin_setup():
     map = get_tree().get_root().get_node("Main/Map")
     combat_dialog = map.get_node("UI/CombatDialog")
-
+    goal_defs = Yaml.load_yaml("res://rules/goals.yaml")
+    print("[GameLoop] Loaded ", goal_defs.size(), " AI goals")
 
 func begin_start_turn():
     turn += 1

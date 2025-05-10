@@ -6,84 +6,130 @@ Simplified YAML parser, which supports:
 - Top-level lists of dictionaries (like your combat_rules.yaml)
 - Nested lists and scalars
 - Basic types (int, float, bool, string)
-- Simple indentation-based structure (2 spaces)
+- Simple indentation-based structure (4 spaces because godot editor)
 '''
 
-# Parses simplified YAML to a Dictionary or Array
+func load_yaml(path: String) -> Variant:
+    var file := FileAccess.open(path, FileAccess.READ)
+    if not file:
+        print("[YamlParser] Could not open file: " + path)
+        return {}
+
+    var text := file.get_as_text()
+    file.close()
+
+    var result = parse_simple_yaml(text)
+    if result == null:
+        print("[YamlParser] Failed to parse YAML from: " + path)
+        return {}
+
+    print(result)
+    return result
+
+
 func parse_simple_yaml(text: String) -> Variant:
-    var lines = text.split("\n", false)
-    return _parse_lines(lines)
-
-func _parse_lines(lines: PackedStringArray, base_indent := 0, start_line := 0) -> Variant:
-    var result = []
-    var current_dict = {}
-    var mode = null  # 'dict' or 'list'
-
-    var i = start_line
-    while i < lines.size():
-        var raw_line = lines[i]
-        var indent = raw_line.length() - raw_line.lstrip(" ").length()
-        if indent < base_indent or raw_line.strip_edges() == "" or raw_line.strip_edges().begins_with("#"):
-            if indent < base_indent:
-                break  # end of current block
-            i += 1
+    var lines = []
+    for raw in text.split("\n", false):
+        var trimmed = raw.strip_edges()
+        if trimmed == "" or trimmed.begins_with("#"):
             continue
+        var indent = raw.length() - raw.lstrip(" ").length()
+        if indent % 4 != 0:
+            print("YAML error: indent not multiple of 4")
+            continue
+        lines.append({
+            "indent": indent / 4,
+            "text": trimmed
+        })
+    return _parse_structured(lines, 0, 0)
 
-        var line = raw_line.strip_edges()
+func _parse_structured(lines: Array, current_indent: int, start_idx: int) -> Variant:
+    var result = null
+    var mode = null
+    var i = start_idx
 
-        if line.begins_with("- "):  # list item
+    while i < lines.size():
+        var entry = lines[i]
+        var indent = entry["indent"]
+        var text = entry["text"]
+
+        if indent < current_indent:
+            print("⤴️  End of block at indent %d (line %d: %s)" % [current_indent, i, text])
+            break
+
+        print("🔍 Line %d (indent %d): %s" % [i, indent, text])
+
+        # ---- LIST ITEM ----
+        if text.begins_with("- "):
+            var item_text = text.substr(2).strip_edges()
+            print("📌 Detected list item: ", item_text)
+
             if mode == null:
                 mode = "list"
                 result = []
             elif mode != "list":
-                push_error("Mixed dict/list mode at line %d: %s" % [i, line])
+                print("❌ YAML Error: Mixed list/dict at line %d: %s" % [i, text])
                 return {}
 
-            var value_line = line.substr(2, line.length()).strip_edges()
-            if ": " in value_line:  # dict entry inside list
-                var sub_lines = PackedStringArray()
-                sub_lines.append(value_line)
-                var sub_indent = indent + 2
-                var j = i + 1
-                while j < lines.size():
-                    var next_indent = lines[j].length() - lines[j].lstrip(" ").length()
-                    if next_indent < sub_indent:
-                        break
-                    sub_lines.append(lines[j])
-                    j += 1
-                result.append(_parse_lines(sub_lines, sub_indent))
-                i = j - 1
+            if ":" in item_text:
+                var parts = item_text.split(":", false, 2)
+                var key = parts[0].strip_edges()
+                var value = parts[1].strip_edges() if parts.size() > 1 else ""
+                print("🗂️  Interpreting as dict: key = %s, value = %s" % [key, value])
+
+                if value == "":
+                    print("↪️  Opening nested block under key '%s'" % key)
+                    var sub = _parse_structured(lines, current_indent, i + 1)
+                    result.append({key: sub})
+                    i = _advance_to_same_indent(lines, current_indent, i)
+                else:
+                    var item_lines = [ { "indent": indent, "text": item_text } ]
+
+                    # Collect all lines that belong to this list item
+                    var j = i + 1
+                    while j < lines.size() and lines[j]["indent"] >= indent:
+                        item_lines.append(lines[j])
+                        j += 1
+
+                    # Parse the whole list item as a dict
+                    var parsed_item = _parse_structured(item_lines, indent, 0)
+                    result.append(parsed_item)
+
+                    i = j - 1  # move to end of this block
+
             else:
-                result.append(_parse_value(value_line))
-        elif ": " in line:  # key-value pair
+                print("📦 List scalar: ", item_text)
+                result.append(_parse_value(item_text))
+
+        # ---- DICT ENTRY ----
+        elif ":" in text:
+            var parts = text.split(":", false, 2)
+            var key = parts[0].strip_edges()
+            var value = parts[1].strip_edges() if parts.size() > 1 else ""
+            print("🧱 Dict entry: key = %s, value = %s" % [key, value])
+
             if mode == null:
                 mode = "dict"
                 result = {}
             elif mode != "dict":
-                push_error("Mixed dict/list mode at line %d: %s" % [i, line])
+                print("❌ YAML Error: Mixed dict/list at line %d: %s" % [i, text])
                 return {}
 
-            var parts = line.split(":", false, 2)
-            var key = parts[0].strip_edges()
-            var value = parts[1].strip_edges()
             if value == "":
-                # Possibly a nested block
-                var sub_indent = indent + 2
-                var sub_lines = PackedStringArray()
-                var j = i + 1
-                while j < lines.size():
-                    var next_indent = lines[j].length() - lines[j].lstrip(" ").length()
-                    if next_indent < sub_indent:
-                        break
-                    sub_lines.append(lines[j])
-                    j += 1
-                result[key] = _parse_lines(sub_lines, sub_indent)
-                i = j - 1
+                print("↪️  Opening nested block under key '%s'" % key)
+                var sub = _parse_structured(lines, current_indent, i + 1)
+                result[key] = sub
+                i = _advance_to_same_indent(lines, current_indent, i)
             else:
                 result[key] = _parse_value(value)
+
+        else:
+            print("❓ YAML Error: Unrecognized line at %d: %s" % [i, text])
+
         i += 1
 
     return result
+
 
 func _parse_value(value: String) -> Variant:
     value = value.strip_edges()
@@ -101,3 +147,10 @@ func _parse_value(value: String) -> Variant:
         return value.substr(1, value.length() - 2)
     else:
         return value
+        
+        
+func _advance_to_same_indent(lines: Array, indent: int, start: int) -> int:
+    for i in range(start + 1, lines.size()):
+        if lines[i]["indent"] <= indent:
+            return i - 1
+    return lines.size() - 1
