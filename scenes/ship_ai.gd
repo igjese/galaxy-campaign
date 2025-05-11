@@ -44,12 +44,24 @@ func run_navigation(delta):
         var ship = get_parent()
         var target_pos = move_order.global_position
         var distance = ship.global_position.distance_to(target_pos)
+
         if distance > stop_distance:
             var direction = (target_pos - ship.global_position).normalized()
             ship.global_position += direction * speed * delta
+            rotate_ship_toward(direction, delta)
         else:
             move_toward_enemy = false
-        
+
+
+func rotate_ship_toward(direction: Vector2, delta: float):
+    var ship = get_parent()
+    if direction.length_squared() == 0:
+        return
+    var target_angle = direction.angle() + PI/2
+    var rotate_speed = 2.0  # radians per second
+    ship.rotation = lerp_angle(ship.rotation, target_angle, rotate_speed * delta)
+
+
 func run_weapons():
     if not fire_order:
         return
