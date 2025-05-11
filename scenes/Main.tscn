@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://dbkbcp753u33p"]
+[gd_scene load_steps=7 format=3 uid="uid://dbkbcp753u33p"]
 
 [ext_resource type="Script" uid="uid://d0emdqkydvqc2" path="res://scenes/map.gd" id="1_vcsgt"]
 [ext_resource type="Texture2D" uid="uid://fgaapbg5fdsi" path="res://assets/map-background.png" id="2_c01mt"]
 [ext_resource type="Script" uid="uid://embxqtjdjepy" path="res://scenes/world_dialog.gd" id="3_nxtc6"]
 [ext_resource type="PackedScene" uid="uid://b5gf5oqku1coh" path="res://scenes/CombatDialog.tscn" id="4_jlsqs"]
 [ext_resource type="Script" uid="uid://dbsjxfc6qxioq" path="res://scenes/battlefield.gd" id="5_q8u5g"]
+[ext_resource type="Script" uid="uid://blc5k6d7kh62s" path="res://scenes/admiral.gd" id="6_c01mt"]
 
 [node name="Main" type="Node2D"]
 
@@ -134,7 +135,13 @@ expand_mode = 1
 
 [node name="PlayerFleet" type="Node2D" parent="Battlefield"]
 
+[node name="Admiral" type="Node" parent="Battlefield/PlayerFleet"]
+script = ExtResource("6_c01mt")
+
 [node name="AIFleet" type="Node2D" parent="Battlefield"]
+
+[node name="Admiral" type="Node" parent="Battlefield/AIFleet"]
+script = ExtResource("6_c01mt")
 
 [connection signal="pressed" from="Map/UI/EndTurn" to="Map" method="_on_end_turn_pressed"]
 [connection signal="pressed" from="Map/UI/WorldDialog/VBox/Mode/Shipyard" to="Map/UI/WorldDialog" method="_on_shipyard_pressed"]

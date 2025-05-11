@@ -1,4 +1,5 @@
 extends Node2D
+class_name Ship
 
 var ship_type := ""
 var is_ai := false
