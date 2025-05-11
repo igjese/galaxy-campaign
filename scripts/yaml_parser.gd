@@ -51,17 +51,19 @@ func parse_lines(lines: Array,  start: int = 0, current_indent: int = 0):
             break
         var entry = raw_line.strip_edges()
         
-        # pattern match: '-key:' etc
+        # pattern match: list
         if entry.begins_with("- "):
-            var item = entry.substr(2)     
+            var item = entry.substr(2)    
+            # first item, so create new list 
             if mode == null:
                 mode = "list"
                 result = []
             elif mode != "list":
                 print("Expected list item at line %d" % i)
-                
+            # simple list item
             if not item.ends_with(":"):
                 result.append(_parse_value(item))
+            # key for a block - recursion
             else:
                 var key = item.left(item.length()-1)
                 var subresult = {}
@@ -69,6 +71,29 @@ func parse_lines(lines: Array,  start: int = 0, current_indent: int = 0):
                 subresult[key] = parse_result[0]
                 i = parse_result[1]
                 result.append(subresult)
+        # dict
+        else:
+            # first item, so create new dict 
+            if mode == null:
+                mode = "dict"
+                result = {}
+            elif mode != "dict":
+                print("Expected dict entry at line %d" % i)
+            # key for block
+            if entry.ends_with(":"):
+                var key = entry.left(entry.length() - 1).strip_edges()
+                var parse_result = parse_lines(lines, i + 1, current_indent + INDENT_UNIT)
+                result[key] = parse_result[0]
+                i = parse_result[1]
+            # one-liner dict
+            else:
+                var parts = entry.split(":", false, 2)
+                if parts.size() < 2:
+                    print("Invalid one-liner dict at line %d: %s" % [i, entry])
+                else:
+                    var key = parts[0].strip_edges()
+                    var value = _parse_value(parts[1].strip_edges())
+                    result[key] = value
         i += 1
     return [result, i]
 
