@@ -75,8 +75,8 @@ script = ExtResource("3_nxtc6")
 [node name="VBox" type="VBoxContainer" parent="Map/UI/WorldDialog"]
 offset_left = 4.0
 offset_top = 4.0
-offset_right = 105.0
-offset_bottom = 98.0
+offset_right = 205.0
+offset_bottom = 133.0
 
 [node name="WorldName" type="Label" parent="Map/UI/WorldDialog/VBox"]
 layout_mode = 2

@@ -74,6 +74,7 @@ func run_weapons():
     if dist > weapon_range:
         return  # Out of range
     print("🔫 [%s] Firing at %s (%.0f px)" % [get_parent(), target, dist])
+    get_parent().fire_at(target)
 
 
 func set_goal(goal_name: String):

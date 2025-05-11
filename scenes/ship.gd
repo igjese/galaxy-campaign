@@ -49,3 +49,15 @@ func get_status() -> Dictionary:
     
 func get_ai() -> ShipAI:
     return $ShipAI  # or use `get_node("ShipAI")`
+
+
+func fire_at(target: Node2D):
+    var laser = $Laser
+    laser.clear_points()
+    laser.add_point(Vector2.ZERO)  # From self
+    laser.add_point(to_local(target.global_position))  # To target
+    laser.visible = true
+
+    # Hide after delay
+    await get_tree().create_timer(0.2).timeout
+    laser.visible = false
