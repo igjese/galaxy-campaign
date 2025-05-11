@@ -117,69 +117,6 @@ func generate_ai_fleet(max_cost: int) -> ShipGroup:
         else:
             break
     return result
-    
-    
-func resolve_battle():
-    var outcome = simulate_battle()
-    process_battle_results(outcome)
-
-
-func simulate_battle():
-    var player_fleet = current_move.ships
-    var ai_fleet = current_move.ai_ships
-    var player_cost = player_fleet.cost()
-    var ai_cost = ai_fleet.cost()
-    var win_chance = float(player_cost["mats"] + player_cost["pers"]) / (player_cost["mats"] + player_cost["pers"] + ai_cost["mats"] + ai_cost["pers"])
-    var roll = randf()
-    var did_win = roll < win_chance
-    var result_text := ""
-    var lost_ships := ShipGroup.new()
-    if did_win:
-        var loss_cost = int(ai_cost["mats"] + ai_cost["pers"]) / 2
-        lost_ships = calculate_losses(loss_cost)
-        result_text = "✔ Victory!\nLost ships: %s" % lost_ships.text()
-    else:
-        lost_ships = player_fleet
-        result_text = "✘ Defeat!\nAll ships were destroyed."
-    print("%s (chances: %f, roll: %f)" % [result_text, win_chance, roll])
-    return { "did_win": did_win, "lost_ships": lost_ships }
-
-
-func calculate_losses(max_loss_cost: int) -> ShipGroup:
-    var lost := ShipGroup.new()
-    var total_lost_cost := 0
-    var sorted_types = current_move.ships.counts.keys()
-    sorted_types.sort_custom(func(a, b):
-        var ca = GameData.ship_designs[a].cost_mats + GameData.ship_designs[a].cost_pers
-        var cb = GameData.ship_designs[b].cost_mats + GameData.ship_designs[b].cost_pers
-        return cb - ca  # higher-cost ships lost first
-    )
-    for ship_type in sorted_types:
-        var design = GameData.ship_designs[ship_type]
-        var unit_cost = design.cost_mats + design.cost_pers
-        var available = current_move.ships.counts[ship_type]
-        for i in available:
-            if total_lost_cost + unit_cost > max_loss_cost:
-                return lost
-            lost.add_type(ship_type, 1)
-            total_lost_cost += unit_cost
-    return lost
-
-
-func process_battle_results(outcome):
-    var star = map.system_map[current_move.to]
-    var outcome_msg = ""
-    if outcome.did_win:
-        star.faction = "player"
-        outcome_msg = "✔ Victory!\nLost ships: %s" % outcome.lost_ships.text()
-        current_move.ships.subtract(outcome.lost_ships)
-        transfer_ships()
-    else:
-        outcome_msg = "✘ Defeat!\nAll ships were destroyed."
-    print("Battle at %s: %s" % [star,outcome_msg])
-    combat_dialog.show_result(outcome_msg)    
-    map.update_gui()
-    change_state(GameState.END_TURN)
 
 
 func queue_move(from: String, to: String, ships: ShipGroup, indicator: Node):
