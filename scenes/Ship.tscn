@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://4youx0rk83mx"]
+[gd_scene load_steps=5 format=3 uid="uid://4youx0rk83mx"]
 
 [ext_resource type="Texture2D" uid="uid://b6csux6cbp0ku" path="res://assets/ships/FF.png" id="1_gjfe0"]
 [ext_resource type="Script" uid="uid://dalhmckelh01s" path="res://scenes/ship.gd" id="1_qq457"]
 [ext_resource type="Texture2D" uid="uid://b1ofuw6lxw84s" path="res://assets/ships/exhaust.png" id="2_qq457"]
+[ext_resource type="Script" uid="uid://v8a4v7snwdt7" path="res://scenes/ship_ai.gd" id="4_ky8oh"]
 
 [node name="Ship" type="Node2D"]
 script = ExtResource("1_qq457")
@@ -14,3 +15,6 @@ texture = ExtResource("1_gjfe0")
 position = Vector2(8.9407e-07, 120)
 scale = Vector2(1.44444, 1)
 texture = ExtResource("2_qq457")
+
+[node name="ShipAI" type="Node" parent="."]
+script = ExtResource("4_ky8oh")

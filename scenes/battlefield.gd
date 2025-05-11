@@ -2,13 +2,25 @@ extends Node2D
 
 @onready var player_fleet = $PlayerFleet
 @onready var ai_fleet = $AIFleet
+@onready var player_admiral = $PlayerFleet/Admiral
+@onready var ai_admiral = $AIFleet/Admiral
+
 @onready var ship_scene = preload("res://scenes/Ship.tscn")
+
+enum Side { PLAYER, AI }
 
 func start():
     show()
     var move = GameLoop.current_move
     spawn_fleet(move.ships, player_fleet, false)
     spawn_fleet(move.ai_ships, ai_fleet, true)
+    
+    player_admiral.assign_ships()
+    ai_admiral.assign_ships()
+
+    # Now you can safely run initial evaluation
+    player_admiral.evaluate_battle()
+    ai_admiral.evaluate_battle()
 
 
 func spawn_fleet(ship_group: ShipGroup, parent: Node, is_ai: bool):
@@ -23,6 +35,15 @@ func spawn_fleet(ship_group: ShipGroup, parent: Node, is_ai: bool):
             ship.rotation_degrees = -90 if is_ai else 90
             ship.get_node("Hull").modulate = Color.LIGHT_CORAL if is_ai else Color.LIGHT_GREEN
             parent.add_child(ship)
+            var ship_ai = ship.get_ai()
+            if is_ai:
+                ship_ai.side = Side.AI
+                ship_ai.fleet = $AIFleet
+                ship_ai.enemy_fleet = $PlayerFleet
+            else:
+                ship_ai.side = Side.PLAYER
+                ship_ai.fleet = $PlayerFleet
+                ship_ai.enemy_fleet = $AIFleet
 
 
 func get_random_spawn_position(x_base: float) -> Vector2:

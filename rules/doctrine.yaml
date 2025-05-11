@@ -1,11 +1,14 @@
 stance: aggressive
 
-boost_priorities:
-  seek_and_destroy: 10
-  retreat_when_damaged: -20
-
 goal_preferences:
-  support: protect_ally
-  frigate: seek_and_destroy
-  carrier: stay_back
-  damaged: retreat_when_damaged
+  assault: seek_and_destroy
+  support: support_allies
+  retreat: retreat
+
+role_conditions:
+  - retreat:
+      health_below: 0.3
+  - support:
+      health_below: 0.5
+  - assault:
+      default: true

@@ -1,35 +1,19 @@
 - seek_and_destroy:
-    priority: 80
-    actions:
-    - go_then_shoot:
-        cost: 1
-        execute:
-        - move_to_enemy
-        - fire_at_enemy
-    - snipe_from_range:
-        cost: 2
-        conditions:
-        - enemy_far
-        execute:
-        - maintain_range
-        - fire_sniper
-
-- slut_it_out:
-    priority: 80
-    actions:
-    - go_then_shoot:
-        cost: 1
-        execute:
-        - move_to_enemy
+    plans:
+    - engage_enemy:
+        steps:
+        - move_toward_enemy
         - fire_at_enemy
 
-- retreat_when_damaged:
-    priority: 90
-    actions:
-    - run_away:
-        cost: 1
-        conditions:
-        - self_health_low
-        execute:
-        - move_away_from_enemy
-        - cloak
+- support_allies:
+    plans:
+    - support_ship:
+        steps:
+        - move_behind_ship
+        - support_fire
+
+- retreat:
+    plans:
+    - flee:
+        steps:
+        - run_away

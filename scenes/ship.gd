@@ -4,9 +4,10 @@ class_name Ship
 var ship_type := ""
 var is_ai := false
 var hull_scale = {"FF": 0.8, "DD": 1.2}
-
 var flicker_offset := 0.0
 var flicker_time := 0.0
+var current_health := 0
+var max_health := 0
 
 
 func _ready():
@@ -16,6 +17,9 @@ func _ready():
 func set_type(ship_type: String, is_ai: bool):
     self.ship_type = ship_type
     self.is_ai = is_ai
+    var design = GameData.ship_designs.get(ship_type, {})
+    max_health = design.get("hp", 100)
+    current_health = max_health
     var path = "res://assets/ships/%s.png" % ship_type
     var texture = load(path)
     $Hull.texture = texture
@@ -36,3 +40,12 @@ func _process(delta):
     $Exhaust.modulate = Color(flicker, flicker, flicker)
     # Slight scale pulse
     $Exhaust.scale = Vector2(1, 1) * (0.9 + 0.1 * sin(flicker_time * 1.5 + flicker_offset))
+
+
+func get_status() -> Dictionary:
+    return {
+        "health_ratio": clamp(current_health / max_health, 0.0, 1.0),
+    }
+    
+func get_ai() -> ShipAI:
+    return $ShipAI  # or use `get_node("ShipAI")`
