@@ -22,6 +22,7 @@ var all_ships = []  # each ship is a dict or lightweight object
 
 var goal_defs = {}
 
+var run_debug := false
 
 func change_state(new_state: int):
     print("State: %s to %s" % [states[state], states[new_state]])
@@ -201,10 +202,14 @@ func queue_move(from: String, to: String, ships: ShipGroup, indicator: Node):
         remaining.append(ship)
     all_ships = remaining
     map.update_gui()
-    map.get_node("UI/WorldDialog").clear_line_items()
+    if not GameLoop.run_debug:
+        map.get_node("UI/WorldDialog").clear_line_items()
 
 
 func _on_shipyard_order(location: String, ships: ShipGroup):
+    build_ships(location, ships)
+    
+func build_ships(location: String, ships: ShipGroup):
     var cost = ships.cost()
     player_materials -= cost["mats"]
     player_personnel -= cost["pers"]

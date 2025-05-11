@@ -35,6 +35,14 @@ anchors_preset = 0
 offset_right = 1440.0
 offset_bottom = 900.0
 
+[node name="RunDebug" type="Button" parent="Map/UI"]
+layout_mode = 0
+offset_left = 1234.0
+offset_top = 15.0
+offset_right = 1327.0
+offset_bottom = 46.0
+text = "Run Debug"
+
 [node name="EndTurn" type="Button" parent="Map/UI"]
 layout_mode = 0
 offset_left = 1345.0
@@ -123,6 +131,9 @@ text = "Move..."
 [node name="CombatDialog" parent="Map/UI" instance=ExtResource("4_jlsqs")]
 visible = false
 
+[node name="Dummy" type="Node2D" parent="Map"]
+position = Vector2(-100, -100)
+
 [node name="Battlefield" type="Node2D" parent="."]
 visible = false
 script = ExtResource("5_q8u5g")
@@ -143,6 +154,7 @@ script = ExtResource("6_c01mt")
 [node name="Admiral" type="Node" parent="Battlefield/AIFleet"]
 script = ExtResource("6_c01mt")
 
+[connection signal="pressed" from="Map/UI/RunDebug" to="Map" method="_on_run_debug_pressed"]
 [connection signal="pressed" from="Map/UI/EndTurn" to="Map" method="_on_end_turn_pressed"]
 [connection signal="pressed" from="Map/UI/WorldDialog/VBox/Mode/Shipyard" to="Map/UI/WorldDialog" method="_on_shipyard_pressed"]
 [connection signal="pressed" from="Map/UI/WorldDialog/VBox/Mode/Fleets" to="Map/UI/WorldDialog" method="_on_fleets_pressed"]

@@ -3,6 +3,11 @@ class_name ShipGroup
 
 var counts: Dictionary = {}
 
+func _init(data := {}):
+    for ship_type in data.keys():
+        counts[ship_type] = data[ship_type]
+
+
 static func new_from_fleet(fleet: Array) -> ShipGroup:
     var group := ShipGroup.new()
     for ship in fleet:

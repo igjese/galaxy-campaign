@@ -98,3 +98,13 @@ func _on_world_pressed(world_node):
         GameLoop.selected_world = world_node
         $UI/WorldDialog.prepare_for_world(world_node)
         $UI/WorldDialog.popup_centered()
+
+
+func _on_run_debug_pressed():
+    var game = GameLoop
+    game.run_debug = true
+    var ships = ShipGroup.new({"FF":1,"DD":1})
+    game.build_ships("Niraxis", ships)
+    game.queue_move("Niraxis", "Velthara", ships, $Dummy)
+    game.run_debug = false
+    game.change_state(game.GameState.END_TURN)
