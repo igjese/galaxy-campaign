@@ -25,7 +25,7 @@ func load_yaml(path: String) -> Variant:
         print("[YamlParser] Failed to parse YAML from: " + path)
         return {}
 
-    print(result)
+    print(JSON.stringify(result, "  "))
     return result
 
 
@@ -39,150 +39,79 @@ func parse_simple_yaml(text: String) -> Variant:
     return parse_lines(lines)[0]
     
 
-func parse_lines(lines: Array,  start: int = 0, current_indent: int = 0):
+func parse_lines(lines: Array, start: int = 0, current_indent: int = 0):
     var result = null
     var i = start
-    
     var mode = null
+
     while i < lines.size():
         var raw_line = lines[i]
         var indent = raw_line.length() - raw_line.lstrip(" ").length()
         if indent < current_indent:
+            print("🔚 End of block at line %d (indent %d < %d)" % [i, indent, current_indent])
             break
+
         var entry = raw_line.strip_edges()
-        
-        # pattern match: list
+        print("🔍 Line %d (indent %d): %s" % [i, indent, entry])
+
         if entry.begins_with("- "):
-            var item = entry.substr(2)    
-            # first item, so create new list 
+            var item = entry.substr(2).strip_edges()
+            print("📌 List item: %s" % item)
+
             if mode == null:
                 mode = "list"
                 result = []
+                print("📋 Start of list block")
             elif mode != "list":
-                print("Expected list item at line %d" % i)
-            # simple list item
+                print("❌ Expected list item, but dict mode is active")
+                return [{}, i]
+                
             if not item.ends_with(":"):
-                result.append(_parse_value(item))
-            # key for a block - recursion
+                var parsed = _parse_value(item)
+                print("📦 Scalar list value: %s" % str(parsed))
+                result.append(parsed)
             else:
-                var key = item.left(item.length()-1)
+                var key = item.left(item.length() - 1).strip_edges()
+                print("📂 Nested list block under key '%s'" % key)
+                var parse_result = parse_lines(lines, i + 1, current_indent + INDENT_UNIT)
                 var subresult = {}
-                var parse_result = parse_lines(lines, i+1, current_indent + INDENT_UNIT)
                 subresult[key] = parse_result[0]
-                i = parse_result[1]
                 result.append(subresult)
-        # dict
+                i = parse_result[1]
+                continue
         else:
-            # first item, so create new dict 
+            if mode == "list":
+                print("🔚 Closing list block because line is not a list item")
+                return [result, i]
+            
+            print("🧱 Dict entry: %s" % entry)
+
             if mode == null:
                 mode = "dict"
                 result = {}
+                print("📄 Start of dict block")
             elif mode != "dict":
-                print("Expected dict entry at line %d" % i)
-            # key for block
+                print("❌ Expected dict entry, but list mode is active")
+                return [{}, i]
+
             if entry.ends_with(":"):
                 var key = entry.left(entry.length() - 1).strip_edges()
+                print("📂 Nested dict block under key '%s'" % key)
                 var parse_result = parse_lines(lines, i + 1, current_indent + INDENT_UNIT)
                 result[key] = parse_result[0]
                 i = parse_result[1]
-            # one-liner dict
+                continue
             else:
                 var parts = entry.split(":", false, 2)
                 if parts.size() < 2:
-                    print("Invalid one-liner dict at line %d: %s" % [i, entry])
+                    print("❌ Invalid one-liner dict at line %d: %s" % [i, entry])
                 else:
                     var key = parts[0].strip_edges()
                     var value = _parse_value(parts[1].strip_edges())
+                    print("➡️  Key = %s, Value = %s" % [key, str(value)])
                     result[key] = value
         i += 1
     return [result, i]
-
-
-func _parse_structured(lines: Array, current_indent: int, start_idx: int) -> Variant:
-    var result = null
-    var mode = null
-    var i = start_idx
-
-    while i < lines.size():
-        var entry = lines[i]
-        var indent = entry["indent"]
-        var text = entry["text"]
-
-        if indent < current_indent:
-            break  # End of this block
-
-        print("🔍 Line %d (indent %d): %s" % [i, indent, text])
-
-        # ---- LIST ITEM ----
-        if text.begins_with("- "):
-            var item_text = text.substr(2).strip_edges()
-            print("📌 Detected list item: %s" % item_text)
-
-            if mode == null:
-                mode = "list"
-                result = []
-            elif mode != "list":
-                print("❌ YAML Error: Mixed dict/list at line %d: %s" % [i, text])
-                return {}
-
-            if not item_text.ends_with(":"):
-                print("❌ YAML Error: List item must be in '- key:' form (no inline value) at line %d: %s" % [i, text])
-                return {}
-
-            var key = item_text.substr(0, item_text.length() - 1).strip_edges()
-
-            # Gather nested block
-            # Also include lines at the same indent if they’re part of the same logical list block
-            var nested_lines = []
-            var j = i + 1
-            while j < lines.size():
-                var next_indent = lines[j]["indent"]
-                if next_indent < indent:
-                    break
-                if next_indent == indent and lines[j]["text"].begins_with("- "):
-                    break  # new list item starts
-                nested_lines.append(lines[j])
-                j += 1
-
-
-            var nested = _parse_structured(nested_lines, indent, 0)
-            result.append({key: nested})
-            i = j - 1
-
-        # ---- DICT ENTRY ----
-        elif ":" in text:
-            var parts = text.split(":", false, 2)
-            var key = parts[0].strip_edges()
-            var value = parts[1].strip_edges() if parts.size() > 1 else ""
-            print("🧱 Dict entry: key = %s, value = %s" % [key, value])
-
-            if mode == null:
-                mode = "dict"
-                result = {}
-            elif mode != "dict":
-                print("❌ YAML Error: Mixed dict/list at line %d: %s" % [i, text])
-                return {}
-
-            if value == "":
-                print("↪️  Opening nested block under key '%s'" % key)
-                var nested_lines = []
-                var j = i + 1
-                while j < lines.size() and lines[j]["indent"] > indent:
-                    nested_lines.append(lines[j])
-                    j += 1
-
-                var nested = _parse_structured(nested_lines, indent + 1, 0)
-                result[key] = nested
-                i = j - 1
-            else:
-                result[key] = _parse_value(value)
-
-        else:
-            print("❓ YAML Error: Unrecognized line at %d: %s" % [i, text])
-
-        i += 1
-
-    return result
 
 
 func _parse_value(value: String) -> Variant:
@@ -203,8 +132,3 @@ func _parse_value(value: String) -> Variant:
         return value
         
         
-func _advance_to_same_indent(lines: Array, indent: int, start: int) -> int:
-    for i in range(start + 1, lines.size()):
-        if lines[i]["indent"] <= indent:
-            return i - 1
-    return lines.size() - 1
