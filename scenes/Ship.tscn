@@ -22,7 +22,7 @@ script = ExtResource("4_ky8oh")
 [node name="Laser" type="Line2D" parent="."]
 visible = false
 points = PackedVector2Array(0, 0, 100, 100)
-width = 3.0
+width = 7.0
 default_color = Color(0.968545, 0.154674, 0.13776, 1)
 end_cap_mode = 2
 antialiased = true
