@@ -27,6 +27,7 @@ var weapons_cooldown := 0.0
 var weapons_cooldown_max := 3.0  # Will be randomized
 var weapons_cooldown_interval := 0.5
 
+
 func _process(delta):
     captain_cooldown -= delta
     if captain_cooldown <= 0.0:
@@ -122,6 +123,7 @@ func run_step(current_step):
         fire_order = true
     elif current_step == "move_toward_enemy":
         start_moving_toward_enemy()
+
 
 func start_moving_toward_enemy():
     var target = local_facts.get("closest_enemy", {}).get("ref", null)

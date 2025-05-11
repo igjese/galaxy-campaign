@@ -4,23 +4,25 @@ extends Node2D
 @onready var ai_fleet = $AIFleet
 @onready var player_admiral = $PlayerFleet/Admiral
 @onready var ai_admiral = $AIFleet/Admiral
-
 @onready var ship_scene = preload("res://scenes/Ship.tscn")
 
+var player_ships := []
+var ai_ships := []
+
 enum Side { PLAYER, AI }
+
 
 func start():
     show()
     var move = GameLoop.current_move
     spawn_fleet(move.ships, player_fleet, false)
     spawn_fleet(move.ai_ships, ai_fleet, true)
-    
     player_admiral.assign_ships()
     ai_admiral.assign_ships()
-
-    # Now you can safely run initial evaluation
     player_admiral.evaluate_battle()
     ai_admiral.evaluate_battle()
+    player_ships = $PlayerFleet.get_children().filter(func(n): return n is Ship)
+    ai_ships = $AIFleet.get_children().filter(func(n): return n is Ship)
 
 
 func spawn_fleet(ship_group: ShipGroup, parent: Node, is_ai: bool):
@@ -44,6 +46,7 @@ func spawn_fleet(ship_group: ShipGroup, parent: Node, is_ai: bool):
                 ship_ai.side = Side.PLAYER
                 ship_ai.fleet = $PlayerFleet
                 ship_ai.enemy_fleet = $AIFleet
+            ship.connect("ship_destroyed", Callable(self, "_on_ship_destroyed"))
 
 
 func get_random_spawn_position(x_base: float) -> Vector2:
@@ -52,3 +55,20 @@ func get_random_spawn_position(x_base: float) -> Vector2:
     var x_offset = randf_range(-50, 50)
     var y = randf_range(y_min, y_max)
     return Vector2(x_base + x_offset, y)
+    
+    
+func _on_ship_destroyed(ship):
+    if player_ships.has(ship):
+        player_ships.erase(ship)
+    elif ai_ships.has(ship):
+        ai_ships.erase(ship)
+
+    if player_ships.is_empty():
+        end_battle("ai")
+    elif ai_ships.is_empty():
+        end_battle("player")
+
+
+func end_battle(winner: String):
+    print("🏁 Battle ended — winner: %s" % winner)
+    # Transition out of combat here

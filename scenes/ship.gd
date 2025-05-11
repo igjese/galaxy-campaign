@@ -11,6 +11,8 @@ var max_health := 0
 var atk := 0
 var def := 0
 
+signal ship_destroyed(ship)
+
 func _ready():
     flicker_offset = randf_range(0.0, TAU)  # Random phase offset
 
@@ -80,4 +82,5 @@ func apply_base_damage(incoming: int):
 
 func die():
     print("💥 %s destroyed!" % name)
+    emit_signal("ship_destroyed", self)
     queue_free()
