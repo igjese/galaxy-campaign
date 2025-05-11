@@ -65,6 +65,7 @@ func load_doctrine():
 
 func gather_facts() -> Dictionary:
     var facts = {}
+    assign_ships()
     for ship in ships:
         facts[ship] = ship.get_status()
     return facts
