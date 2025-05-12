@@ -93,6 +93,7 @@ Define all AI logic in YAML (rules, actions, goals, doctrine).
 - Reactive Rule Engine: high-priority interrupts (e.g. retreat)
 - Task Execution: carries out the selected action steps
 
+```
 [ Doctrine / Commander ]
         ↓
 [ Goal Selection Layer ]
@@ -102,3 +103,4 @@ Define all AI logic in YAML (rules, actions, goals, doctrine).
 [ Task Execution Layer ]
         ↓
 [ Game World / Godot Ships ]
+```
