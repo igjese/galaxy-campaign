@@ -122,11 +122,22 @@ Define all AI logic in YAML (rules, actions, goals, doctrine).
 - AI attacks: 20% chance per connection (except first 5 turns)
 - AI parity at 80% then +2% every turn
 
-
-## IDEAS
-
-- Lasers lose power with range => leads to emergent behavior eg. closing in etc
+Later:
 - Fog of war: scouts, reserve
+- Supply resource (ships use it for upkeep)
+- Personel resource 
+
+## Tech Tree
+
+Tech is improved via R&D allocation, not a fixed tree. Upgrades require a mix of data (gathered from real battlefield use) and resources (assigned as % of income). Optimal efficiency is at a 50:50 split.
+
+- New systems require **Prototypes**: first unit costs 3×
+- Cost scaling (like SMAC):
+    - Most advanced = x1.5
+    - Next two levels = x1
+    - Older = minimal cost
+- As new systems are prototyped, cost levels shift upward automatically
+
 
 ## Galaxy Strategy Layer (Heuristic-Based)
 The galaxy map simulates strategic warfare using simple heuristics, not full AI simulation. All behaviors are abstracted to create tension, fog of war, and emergent strategy, while remaining lightweight and deterministic.
