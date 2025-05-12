@@ -158,3 +158,32 @@ Cut-Off Systems
 | Positioning fleets  | Reduces attack odds or improves player parity when attacked |
 | Watching main fleet | Helps decide where to defend or strike preemptively         |
 | Splitting territory | Causes isolated AI systems to decay and become vulnerable   |
+
+## Emulating Real-World Ship Roles
+
+| Class                  | Real-World Role          | Traits to Emulate                 | Emergent Behavior              |
+| ---------------------- | ------------------------ | --------------------------------- | ------------------------------ |
+| **FF (Frigate)**       | Screening, escort, recon | Fast, cheap, low HP/attack        | Harass, scout, bait, screen    |
+| **CL (Light Cruiser)** | Fast strike/support      | Moderate firepower/speed, fragile | Flankers, light push, screen   |
+| **CA (Heavy Cruiser)** | General-purpose brawler  | Solid stats, slower, more durable | Backbone unit, flexible        |
+| **BC (Battlecruiser)** | Fast but heavy-hitting   | High damage, fast, poor armor     | Shock tactics, hit-and-run     |
+| **BB (Battleship)**    | Line anchor, tank        | High HP, slow, powerful           | Line holding, absorbs pressure |
+
+### Realistic and Useful Subclasses
+
+| Class  | Subclass             | Concept / Role                     | Tactical Flavor                               |
+| ------ | -------------------- | ---------------------------------- | --------------------------------------------- |
+| **FF** | Gunboat              | Cheap, swarmable cannon ship       | Harass, escort, disposable picket             |
+|        | Missile Boat         | Light, long-range punch            | First-strike or bait, poor endurance          |
+|        | Drone Frigate        | Deploys autonomous units           | Future tech scout, harassment swarm           |
+| **DD** | PDC Escort           | Close-in defense specialist (CIWS) | Defends capital ships from missiles/drones    |
+|        | Torpedo Destroyer    | Anti-capital burst damage          | Flanker or ambush finisher                    |
+|        | Recon Destroyer      | High speed, decent sensors         | Fast-response scout or screen leader          |
+| **CL** | Sensor Cruiser       | Superior detection, fog clearing   | Battlefield intel + midline support           |
+|        | Skirmisher           | Mobility + moderate punch          | Maneuver doctrine enabler                     |
+| **CA** | Assault Cruiser      | Heavy armor, short-range weapons   | Punches through screens, draws fire           |
+|        | Missile CA           | Long-range, mid-speed              | Line-support or siege ship                    |
+| **BC** | Fast Missile Cruiser | High DPS, low armor                | Shock & awe, but can't stay in a fight        |
+|        | Command BC           | Bonus to nearby ships (flavor)     | Fleet leader with behavior-modifying doctrine |
+| **BB** | Heavy Gun BB         | Massive cannons, short range       | Dominates line battles, poor agility          |
+|        | Carrier BB           | Launches drones or strike craft    | Strategic asset, high priority target         |
