@@ -31,11 +31,19 @@ func _on_start_battle_pressed():
     battlefield.start()
 
 
-func show_result(result_text):
-    $VBox/Result.text = result_text
+func show_result(did_win: bool, survivors: ShipGroup):
+    if did_win:
+        $VBox/Result.text = "✔ Victory"
+        $VBox/Fleets/Player.text = survivors.text("\n")
+        $VBox/Fleets/AI.text = "None"
+    else:
+        $VBox/Result.text = "✘ Defeat"
+        $VBox/Fleets/Player.text = "None"
+        $VBox/Fleets/AI.text = "?"    
     $VBox/Buttons/StartBattle.visible = false
     $VBox/Buttons/Close.visible = true
 
 
 func _on_close_pressed():
     hide()
+    GameLoop.change_state(GameLoop.GameState.END_TURN)

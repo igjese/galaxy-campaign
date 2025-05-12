@@ -79,7 +79,7 @@ func begin_process_moves():
         
         
 func begin_move():
-    map.transfer_ships()
+    transfer_ships()
     change_state(GameState.END_TURN)
 
 
@@ -168,7 +168,6 @@ func collect_resources():
             player_materials += star.materials
             player_supply += star.supply
             player_personnel += star.personnel
-    
 
 
 func end_combat(did_win: bool, survivors: ShipGroup):
@@ -181,6 +180,9 @@ func end_combat(did_win: bool, survivors: ShipGroup):
         # Player lost
         current_move.ships = ShipGroup.new()  # wiped out
     map.show()
+    var combat_dialog = map.get_node("UI/CombatDialog")
+    combat_dialog.show_result(did_win, survivors)
+    combat_dialog.show()
     get_tree().get_root().get_node("Main/Battlefield").hide()
     map.update_gui()
-    change_state(GameState.END_TURN)
+    #change_state(GameState.END_TURN)
