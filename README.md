@@ -104,3 +104,25 @@ Define all AI logic in YAML (rules, actions, goals, doctrine).
         ↓
 [ Game World / Godot Ships ]
 ```
+## TODO
+
+- Retreat when low on hp
+- Radio chatter
+- Ship names
+- CL, CA, BC, BB ship classes
+- Ship class speed
+- CL and BC are faster, CA and BB more armored, etc
+- Simple explosions
+- Ships should reposition or at least hover when "parked"
+- Visual damage: crack overlay, flicker
+- Ship trails
+- Commands: harass, regroup, keep together
+- Ships instantly change direction, but have turning speed
+- AI attacks: 20% chance per connection (except first 5 turns)
+- AI parity at 80% then +2% every turn
+
+
+## IDEAS
+
+- Lasers lose power with range => leads to emergent behavior eg. closing in etc
+- Fog of war: scouts, reserve
