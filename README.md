@@ -106,6 +106,7 @@ Define all AI logic in YAML (rules, actions, goals, doctrine).
 ```
 ## TODO
 
+- Retarget
 - Retreat when low on hp
 - Radio chatter
 - Ship names
