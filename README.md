@@ -127,3 +127,34 @@ Define all AI logic in YAML (rules, actions, goals, doctrine).
 
 - Lasers lose power with range => leads to emergent behavior eg. closing in etc
 - Fog of war: scouts, reserve
+
+## Galaxy Strategy Layer (Heuristic-Based)
+The galaxy map simulates strategic warfare using simple heuristics, not full AI simulation. All behaviors are abstracted to create tension, fog of war, and emergent strategy, while remaining lightweight and deterministic.
+
+- No direct fleet simulation — AI strength is represented as per-system threat values.
+- AI behavior is faked through drift, decay, and bias, creating the illusion of planning.
+- Player actions (scouting, positioning, splitting AI territory) influence outcomes.
+
+
+Scouting
+- If player scouts a system this turn: AI fleet is capped to visible threat (only slow reinforcements per turn).
+- AI also "scouts" player systems: Scouted systems are twice as likely to be attacked next turn.
+
+Main Fleet Weight
+- A virtual “main fleet” weight moves randomly across AI systems.
+- Boosts threat level in systems it visits.
+- Encourages player to track and intercept “major enemy pushes.”
+
+Cut-Off Systems
+- AI systems disconnected from AI core begin to decay over time:
+- 10% parity per turn, max -50%
+- Optional: lose ability to launch attacks
+- This encourages flanking, chokepoint control, and cleanup operations.
+
+### Strategic Effects
+| Player Action       | Result                                                      |
+| ------------------- | ----------------------------------------------------------- |
+| Scouting enemy      | Locks AI to revealed threat, prevents surprise buildup      |
+| Positioning fleets  | Reduces attack odds or improves player parity when attacked |
+| Watching main fleet | Helps decide where to defend or strike preemptively         |
+| Splitting territory | Causes isolated AI systems to decay and become vulnerable   |
