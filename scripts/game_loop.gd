@@ -169,3 +169,18 @@ func collect_resources():
             player_supply += star.supply
             player_personnel += star.personnel
     
+
+
+func end_combat(did_win: bool, survivors: ShipGroup):
+    var star = map.system_map[current_move.to]
+    if did_win:
+        star.faction = "player"
+        current_move.ships = survivors
+        transfer_ships()
+    else:
+        # Player lost
+        current_move.ships = ShipGroup.new()  # wiped out
+    map.show()
+    get_tree().get_root().get_node("Main/Battlefield").hide()
+    map.update_gui()
+    change_state(GameState.END_TURN)

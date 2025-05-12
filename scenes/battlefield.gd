@@ -11,6 +11,7 @@ var ai_ships := []
 
 enum Side { PLAYER, AI }
 
+signal combat_complete(did_win: bool, survivors)
 
 func start():
     show()
@@ -71,4 +72,25 @@ func _on_ship_destroyed(ship):
 
 func end_battle(winner: String):
     print("🏁 Battle ended — winner: %s" % winner)
+    var did_win = winner == "player" 
     # Transition out of combat here
+    var survivors = collect_survivors(did_win)
+    for ship in player_ships:
+        if is_instance_valid(ship):
+            ship.queue_free()
+    for ship in ai_ships:
+        if is_instance_valid(ship):
+            ship.queue_free()   
+    emit_signal("combat_complete", did_win, survivors)
+    player_ships.clear()
+    ai_ships.clear()
+
+func collect_survivors(did_win) -> ShipGroup:
+    if not did_win:
+        return null
+    var survivors := ShipGroup.new()
+    var fleet_node = get_node("PlayerFleet")
+    for ship in fleet_node.get_children():
+        if ship is Ship:
+            survivors.add_type(ship.ship_type, 1)
+    return survivors

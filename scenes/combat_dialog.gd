@@ -1,8 +1,6 @@
 extends PopupPanel
 class_name CombatDialog
 
-signal combat_complete(did_win: bool, location: String, loss_cost: int)
-
 var player_fleet = []
 var ai_fleet = []
 var location = ""

@@ -69,3 +69,7 @@ func duplicate() -> ShipGroup:
     for type in counts.keys():
         new_group.counts[type] = counts[type]
     return new_group
+
+
+func add_type(type: String, amount: int = 1) -> void:
+    counts[type] = counts.get(type, 0) + amount

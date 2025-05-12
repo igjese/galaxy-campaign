@@ -19,7 +19,7 @@ func _ready():
 func connect_signals():
     $UI/WorldDialog.connect("move_queued", Callable(self, "_on_move_queued"))
     $UI/WorldDialog.connect("shipyard_order", Callable(GameLoop, "_on_shipyard_order"))
-    $UI/CombatDialog.connect("combat_complete", Callable(self, "_on_combat_complete"))
+    get_parent().get_node("Battlefield").connect("combat_complete", Callable(self, "_on_combat_complete"))
     for world in system_map.values():
         world.connect("world_pressed", Callable(self, "_on_world_pressed"))
 
@@ -108,3 +108,7 @@ func _on_run_debug_pressed():
     game.queue_move("Niraxis", "Velthara", ships, $Dummy)
     game.run_debug = false
     game.change_state(game.GameState.END_TURN)
+
+
+func _on_combat_complete(did_win: bool, survivors: ShipGroup):
+    GameLoop.end_combat(did_win, survivors)
