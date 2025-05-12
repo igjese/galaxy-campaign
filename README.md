@@ -187,3 +187,26 @@ Cut-Off Systems
 |        | Command BC           | Bonus to nearby ships (flavor)     | Fleet leader with behavior-modifying doctrine |
 | **BB** | Heavy Gun BB         | Massive cannons, short range       | Dominates line battles, poor agility          |
 |        | Carrier BB           | Launches drones or strike craft    | Strategic asset, high priority target         |
+
+## Weapons
+
+| Weapon                       | Trait                                                     | Emergent Behavior                                        | Strategic Implication                                           |
+| ---------------------------- | --------------------------------------------------------- | -------------------------------------------------------- | --------------------------------------------------------------- |
+| **Laser**                    | Instant hit, full accuracy, **damage falloff with range** | Prefers close engagement                                 | Brawlers benefit; fast ships can “get under” long-range targets |
+| **Kinetic**                  | No falloff, **can miss**, maybe has cooldown              | Requires line of sight & proximity                       | Good against slow targets; high agility counters it             |
+| **Missiles**                 | **Limited ammo**, long-range, may be intercepted          | Forces ammo conservation, requires good target selection | Incentivizes first-strike, AI must "know when to launch"        |
+
+### AI reactions based on weapon types
+
+Lasers:
+- Close in fast to maximize damage
+- Retreat if outranged or outgunned
+
+Kinetics:
+- Prefer slower enemies or shoot at clusters
+- If own hit chance is too low, seek better positioning
+
+Missiles:
+- Hold fire until good hit chance or high-value target
+- Don't waste on fast ships or weak scouts
+- Retreat if out of ammo (or change role to "distraction")
