@@ -172,6 +172,11 @@ Cut-Off Systems
 
 ## Emulating Real-World Ship Roles
 
+Each ship class reflects real-world naval roles, with distinct stats that drive emergent behavior. 
+
+These natural differences let AI behavior emerge without scripting roles — ships act appropriately based on their attributes.
+
+
 | Class                  | Real-World Role          | Traits to Emulate                 | Emergent Behavior              |
 | ---------------------- | ------------------------ | --------------------------------- | ------------------------------ |
 | **FF (Frigate)**       | Screening, escort, recon | Fast, cheap, low HP/attack        | Harass, scout, bait, screen    |
@@ -181,6 +186,8 @@ Cut-Off Systems
 | **BB (Battleship)**    | Line anchor, tank        | High HP, slow, powerful           | Line holding, absorbs pressure |
 
 ### Realistic and Useful Subclasses
+
+Subclasses simplify ship design by offering ready-made roles—like missile boats or recon destroyers—where core systems are fixed. The player only chooses the tech level (cost vs performance), not full layouts, making fleet building fast and strategic.
 
 | Class  | Subclass             | Concept / Role                     | Tactical Flavor                               |
 | ------ | -------------------- | ---------------------------------- | --------------------------------------------- |
