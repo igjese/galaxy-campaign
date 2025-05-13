@@ -10,6 +10,10 @@ var current_health := 0
 var max_health := 0
 var atk := 0
 var def := 0
+var laser_target_node: Node2D = null
+var laser_timer: float = 0.0
+var laser_duration: float = 0.2
+
 
 signal ship_destroyed(ship)
 
@@ -39,13 +43,19 @@ func scale_to_normalize():
 
 
 func _process(delta):
+    # flicker
     flicker_time += delta * 8.0  # Speed of flicker
     var flicker = 0.8 + 0.2 * sin(flicker_time + flicker_offset)  # Between 0.6 and 1.0
-    # Modulate brightness
     $Exhaust.modulate = Color(flicker, flicker, flicker)
-    # Slight scale pulse
     $Exhaust.scale = Vector2(1, 1) * (0.9 + 0.1 * sin(flicker_time * 1.5 + flicker_offset))
-
+    # laser
+    if laser_timer > 0:
+        laser_timer -= delta
+        var pulse = 0.3 + 0.7 * sin(Time.get_ticks_msec() / 100.0)
+        $Laser.modulate = Color(1.0, 0.4, 0.0, pulse)
+        update_laser()
+    else:
+        $Laser.visible = false
 
 func get_status() -> Dictionary:
     return {
@@ -57,19 +67,20 @@ func get_ai() -> ShipAI:
 
 
 func fire_at(target: Node2D):
-    draw_laser_to(target)
-    target.apply_base_damage(atk)  # or whatever amount
+    laser_target_node = target
+    laser_timer = laser_duration
+    target.apply_base_damage(atk)
 
     
-func draw_laser_to(target):
+func draw_laser_to(hit_pos: Vector2):
     var laser = $Laser
     laser.clear_points()
-    laser.add_point(Vector2.ZERO)  # From self
-    laser.add_point(to_local(target.global_position))  # To target
+    laser.add_point(Vector2.ZERO)
+    laser.add_point(to_local(hit_pos))
     laser.visible = true
-    # Hide after delay
-    await get_tree().create_timer(0.2).timeout
+    await get_tree().create_timer(laser_duration).timeout
     laser.visible = false
+
 
 
 func apply_base_damage(incoming: int):
@@ -93,3 +104,14 @@ func spawn_explosion(scale: float = 1.0):
     explosion.scale = Vector2(explosion_size, explosion_size)
     explosion.global_position = global_position
     get_parent().add_child(explosion)
+
+
+func update_laser():
+    if not is_instance_valid(laser_target_node):
+        $Laser.visible = false
+        return
+    var laser = $Laser
+    laser.clear_points()
+    laser.add_point(Vector2.ZERO)
+    laser.add_point(to_local(laser_target_node.global_position))
+    laser.visible = true
