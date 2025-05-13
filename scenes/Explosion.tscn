@@ -1,0 +1,14 @@
+[gd_scene load_steps=4 format=3 uid="uid://dbv4ola30s0kl"]
+
+[ext_resource type="Texture2D" uid="uid://bibcm8s20tnh2" path="res://assets/explosion-outer.png" id="1_i4n8h"]
+[ext_resource type="Script" uid="uid://bti60touigi7g" path="res://scenes/explosion.gd" id="1_rux61"]
+[ext_resource type="Texture2D" uid="uid://3uitj4y1dbqw" path="res://assets/explosion-inner.png" id="2_rux61"]
+
+[node name="Explosion" type="Node2D"]
+script = ExtResource("1_rux61")
+
+[node name="Outer" type="Sprite2D" parent="."]
+texture = ExtResource("1_i4n8h")
+
+[node name="Inner" type="Sprite2D" parent="."]
+texture = ExtResource("2_rux61")

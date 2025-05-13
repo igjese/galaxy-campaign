@@ -76,11 +76,20 @@ func apply_base_damage(incoming: int):
     var effective_damage = max(incoming - def, 1)
     current_health -= effective_damage
     print("💢 %s takes %d damage (after %d def)" % [name, effective_damage, def])
-    
+    spawn_explosion(0.5)
     if current_health <= 0:
         die()
 
 func die():
     print("💥 %s destroyed!" % name)
+    spawn_explosion(2)
     emit_signal("ship_destroyed", self)
     queue_free()
+    
+
+func spawn_explosion(scale: float = 1.0):
+    var explosion_size = 0.2 * scale * hull_scale[ship_type]
+    var explosion = preload("res://scenes/Explosion.tscn").instantiate()
+    explosion.scale = Vector2(explosion_size, explosion_size)
+    explosion.global_position = global_position
+    get_parent().add_child(explosion)
