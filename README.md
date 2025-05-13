@@ -106,7 +106,8 @@ Define all AI logic in YAML (rules, actions, goals, doctrine).
 ```
 ## TODO
 
-- Retarget
+- Bug: Retarget
+- Bug: 2 battles, 2nd fleet gets deleted before battle
 - Retreat when low on hp
 - Radio chatter
 - Ship names
@@ -126,6 +127,8 @@ Later:
 - Fog of war: scouts, reserve
 - Supply resource (ships use it for upkeep)
 - Personel resource 
+- Pre-generated batches of context-specific messages for radio-chatter and galaxy news
+- Galaxy news from ai logs (battles, map movements)
 
 ## Tech Tree
 
