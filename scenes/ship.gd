@@ -52,7 +52,7 @@ func _process(delta):
     if laser_timer > 0:
         laser_timer -= delta
         var pulse = 0.3 + 0.7 * sin(Time.get_ticks_msec() / 100.0)
-        $Laser.modulate = Color(1.0, 0.4, 0.0, pulse)
+        $Laser.modulate = Color(2.0, 0.4, 0.0, pulse)
         update_laser()
     else:
         $Laser.visible = false
