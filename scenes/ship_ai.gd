@@ -18,6 +18,8 @@ var fire_order := false
 var move_toward_enemy := false
 var move_order = null
 var speed := 40.0
+var drift_vector := Vector2.ZERO
+var drift_speed := speed/15  # adjust for style
 var stop_distance := 50.0
         
 var captain_cooldown := 0.0
@@ -41,17 +43,21 @@ func _process(delta):
     
 
 func run_navigation(delta):
+    var ship = get_parent()
     if move_toward_enemy and move_order and move_order is Node2D:
-        var ship = get_parent()
         var target_pos = move_order.global_position
         var distance = ship.global_position.distance_to(target_pos)
 
         if distance > stop_distance:
             var direction = (target_pos - ship.global_position).normalized()
+            drift_vector = direction  # <-- Save direction for drift
             ship.global_position += direction * speed * delta
             rotate_ship_toward(direction, delta)
         else:
             move_toward_enemy = false
+    else:
+        # Apply passive drift if no active movement
+        ship.global_position += drift_vector * drift_speed * delta
 
 
 func rotate_ship_toward(direction: Vector2, delta: float):
