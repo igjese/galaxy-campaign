@@ -113,9 +113,7 @@ Define all AI logic in YAML (rules, actions, goals, doctrine).
 - CL, CA, BC, BB ship classes
 - Ship class speed
 - CL and BC are faster, CA and BB more armored, etc
-- Ships should reposition or at least hover when "parked"
 - Commands: harass, regroup, keep together
-- Ships instantly change direction, but have turning speed
 - AI attacks: 20% chance per connection (except first 5 turns)
 - AI parity at 80% then +2% every turn
 

@@ -61,6 +61,20 @@ func _process(delta):
         update_laser()
     else:
         $Laser.visible = false
+        avoid_overlap()
+        
+func avoid_overlap():
+    var my_pos = global_position
+    for fleet in get_parent().get_parent().get_children():
+        for other in fleet.get_children():
+            if other == self:
+                continue
+            if other is Ship:
+                var diff = my_pos - other.global_position
+                var dist = diff.length()
+                if dist < 30:  # adjust spacing threshold
+                    global_position += diff.normalized() * 5 * get_process_delta_time()
+
 
 func get_status() -> Dictionary:
     return {
