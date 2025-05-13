@@ -72,6 +72,7 @@ func _on_ship_destroyed(ship):
 
 func end_battle(winner: String):
     print("🏁 Battle ended — winner: %s" % winner)
+    await get_tree().create_timer(1.0).timeout  # Add a 1-second pause
     var did_win = winner == "player" 
     # Transition out of combat here
     var survivors = collect_survivors(did_win)

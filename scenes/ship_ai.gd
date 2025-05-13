@@ -63,21 +63,6 @@ func rotate_ship_toward(direction: Vector2, delta: float):
     ship.rotation = lerp_angle(ship.rotation, target_angle, rotate_speed * delta)
 
 
-func run_weapons():
-    if not fire_order:
-        return
-    gather_local_facts()
-    var target_data = local_facts.get("closest_enemy", null)
-    if target_data == null or not target_data.has("ref"):
-        return
-    var target = target_data["ref"]
-    var dist = target_data["distance"]
-    if dist > weapon_range:
-        return  # Out of range
-    print("🔫 [%s] Firing at %s (%.0f px)" % [get_parent(), target, dist])
-    get_parent().fire_at(target)
-
-
 func set_goal(goal_name: String):
     current_goal = goal_name
     for entry in GameLoop.goal_defs:
@@ -91,8 +76,25 @@ func set_goal(goal_name: String):
     print("🧠 Goal set: %s → plan: %s → steps: %s" % [goal_name, current_plan, steps])
 
 
+func run_weapons():
+    if not fire_order:
+        return
+    gather_local_facts()
+    var target_data = local_facts.get("closest_enemy", null)
+    if target_data == null or not target_data.has("ref"):
+        return
+    var target = target_data["ref"]
+    var dist = target_data["distance"]
+    if dist > weapon_range:
+        return  # Out of range
+    print("🔫 [%s] Firing at %s (%.0f px)" % [get_parent(), target, dist])
+    get_parent().fire_at(target)
+    
+
 func run_captain():
     gather_local_facts()
+    if local_facts.get("closest_enemy") == null:
+        return  # No one left to act on
     if steps.is_empty():
         return
     var max_checks = steps.size()
@@ -138,6 +140,10 @@ func gather_local_facts():
     local_facts["ship_status"] = ship.get_status()
     # Find closest enemy
     var enemies = enemy_fleet.get_children().filter(func(c): return c is Ship)
+    if enemies.is_empty():
+        # No enemies left — exit safely
+        local_facts["closest_enemy"] = null
+        return
     var closest = null
     var closest_dist = INF
     for enemy in enemies:
