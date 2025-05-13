@@ -13,6 +13,7 @@ var def := 0
 var laser_target_node: Node2D = null
 var laser_timer: float = 0.0
 var laser_duration: float = 0.2
+var is_dying := false
 
 
 signal ship_destroyed(ship)
@@ -43,6 +44,8 @@ func scale_to_normalize():
 
 
 func _process(delta):
+    if is_dying:
+        return
     # flicker
     flicker_time += delta * 8.0  # Speed of flicker
     var flicker = 0.8 + 0.2 * sin(flicker_time + flicker_offset)  # Between 0.6 and 1.0
@@ -92,10 +95,15 @@ func apply_base_damage(incoming: int):
         die()
 
 func die():
+    if is_dying:
+        return  # Prevent double-die bugs
+    is_dying = true
     print("💥 %s destroyed!" % name)
-    spawn_explosion(2)
     emit_signal("ship_destroyed", self)
+    spawn_explosion(1.5)
+    await get_tree().create_timer(0.4).timeout
     queue_free()
+
     
 
 func spawn_explosion(scale: float = 1.0):
@@ -109,6 +117,7 @@ func spawn_explosion(scale: float = 1.0):
 func update_laser():
     if not is_instance_valid(laser_target_node):
         $Laser.visible = false
+        print("target not valid")
         return
     var laser = $Laser
     laser.clear_points()
