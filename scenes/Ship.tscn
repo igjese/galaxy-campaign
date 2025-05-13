@@ -1,9 +1,14 @@
-[gd_scene load_steps=5 format=3 uid="uid://4youx0rk83mx"]
+[gd_scene load_steps=6 format=3 uid="uid://4youx0rk83mx"]
 
 [ext_resource type="Texture2D" uid="uid://b6csux6cbp0ku" path="res://assets/ships/FF.png" id="1_gjfe0"]
 [ext_resource type="Script" uid="uid://dalhmckelh01s" path="res://scenes/ship.gd" id="1_qq457"]
 [ext_resource type="Texture2D" uid="uid://b1ofuw6lxw84s" path="res://assets/ships/exhaust.png" id="2_qq457"]
 [ext_resource type="Script" uid="uid://v8a4v7snwdt7" path="res://scenes/ship_ai.gd" id="4_ky8oh"]
+
+[sub_resource type="Curve" id="Curve_ky8oh"]
+_limits = [0.99, 1.0, 0.0, 1.0]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.99), 0.0, 0.0, 0, 0]
+point_count = 2
 
 [node name="Ship" type="Node2D"]
 script = ExtResource("1_qq457")
@@ -26,3 +31,19 @@ width = 9.0
 default_color = Color(1, 0.3, 0, 1)
 end_cap_mode = 2
 antialiased = true
+
+[node name="Trail" type="CPUParticles2D" parent="."]
+position = Vector2(0, 127)
+amount = 30
+lifetime = 1.5
+randomness = 0.31
+local_coords = true
+emission_shape = 1
+emission_sphere_radius = 10.0
+spread = 20.0
+gravity = Vector2(0, 50)
+initial_velocity_min = 1.0
+initial_velocity_max = 1.0
+scale_amount_min = 0.6
+scale_amount_curve = SubResource("Curve_ky8oh")
+color = Color(0.523035, 0.752823, 1, 1)
