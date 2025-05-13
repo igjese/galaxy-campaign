@@ -58,6 +58,13 @@ func run_navigation(delta):
     else:
         # Apply passive drift if no active movement
         ship.global_position += drift_vector * drift_speed * delta
+        # While idle, rotate toward target if known
+        var target_data = local_facts.get("closest_enemy", null)
+        if target_data and target_data.has("ref"):
+            var target = target_data["ref"]
+            if is_instance_valid(target):
+                var dir_to_target = (target.global_position - ship.global_position).normalized()
+                rotate_ship_toward(dir_to_target, delta)
 
 
 func rotate_ship_toward(direction: Vector2, delta: float):
