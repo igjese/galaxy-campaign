@@ -108,7 +108,6 @@ Define all AI logic in YAML (rules, actions, goals, doctrine).
 
 - Bug: Retarget
 - Bug: 2 battles, 2nd fleet gets deleted before battle
-- Bug: laser not tracking ship
 - Retreat when low on hp
 - Radio chatter
 - Ship names
@@ -117,7 +116,6 @@ Define all AI logic in YAML (rules, actions, goals, doctrine).
 - CL and BC are faster, CA and BB more armored, etc
 - Ships should reposition or at least hover when "parked"
 - Visual damage: crack overlay, flicker
-- Ship trails
 - Commands: harass, regroup, keep together
 - Ships instantly change direction, but have turning speed
 - AI attacks: 20% chance per connection (except first 5 turns)

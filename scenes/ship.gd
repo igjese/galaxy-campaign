@@ -31,10 +31,12 @@ func set_type(ship_type: String, is_ai: bool):
     def = design.get("def", 0)
     current_health = max_health
     var path = "res://assets/ships/%s.png" % ship_type
-    var texture = load(path)
-    $Hull.texture = texture
+    $Hull.texture = load(path)
+    var overlay = load("res://assets/ships/%s_overlay.png" % ship_type)
+    $Damage.texture = overlay
+    update_damage_overlay()
     scale_to_normalize()
-
+    
 
 func scale_to_normalize():
     var target_height = 30.0
@@ -91,6 +93,7 @@ func apply_base_damage(incoming: int):
     current_health -= effective_damage
     print("💢 %s takes %d damage (after %d def)" % [name, effective_damage, def])
     spawn_explosion(0.5)
+    update_damage_overlay()
     if current_health <= 0:
         die()
 
@@ -124,3 +127,9 @@ func update_laser():
     laser.add_point(Vector2.ZERO)
     laser.add_point(to_local(laser_target_node.global_position))
     laser.visible = true
+
+
+func update_damage_overlay():
+    var health_ratio = clamp(float(current_health) / max_health, 0.0, 1.0)
+    var damage_intensity = sqrt(1.0 - health_ratio)  # nonlinear curve
+    $Damage.modulate.a = damage_intensity

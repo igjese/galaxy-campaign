@@ -51,6 +51,6 @@ var connections = [
 ]
 
 var ship_designs = {
-    "FF": { "cost_mats": 3, "cost_pers": 2, "upkeep": 1, "hp": 10, "atk": 5, "def": 1 },
-    "DD": { "cost_mats": 5, "cost_pers": 3, "upkeep": 2, "hp": 20, "atk": 8, "def": 3 }
+    "FF": { "cost_mats": 3, "cost_pers": 2, "upkeep": 1, "hp": 20, "atk": 5, "def": 1 },
+    "DD": { "cost_mats": 5, "cost_pers": 3, "upkeep": 2, "hp": 30, "atk": 8, "def": 3 }
 }
