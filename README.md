@@ -26,24 +26,26 @@ Simple minimalistic ideas that work:
 
 ## Planned Feature Set
 
-| **Category**               | **Prototype**                                                          | **Future**                                                                                 |
-| -------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| **Map / Systems**          | Network of star systems with fixed resources (materials, supply).      | Add system types (e.g. academy, shipyard), chokepoints, random terrain effects.            |
-| **Resources**              | Materials, Supply.                                                     | Add Personnel (crew), Work (industrial capacity), local production limits.                 |
-| **Fleet AI**               | AI spawns equal-cost fleets in adjacent systems with chance to attack. | Smarter AI with defense priorities, personalities, response to tech or terrain.            |
-| **Fleet Combat**           | Ships auto-move toward enemy, use simple damage rules.                 | Add rules for formation, targeting priority, range, terrain effects.                       |
-| **Ship Design**            | Chassis + 1–2 fixed weapons.                                           | Full modular design: weapons, defenses, utility. Component interactions (e.g. rock-paper). |
-| **Combat Roles**           | All-purpose ships.                                                     | Specialization: missile boat, tank, scout, drone carrier, etc.                             |
-| **Weapons**                | Basic damage-dealing module.                                           | Rock-paper-scissors: lasers, missiles, railguns vs shields, armor, PDC.                    |
-| **Defenses**               | Static HP.                                                             | Shields, armor, PDC, terrain-based modifiers.                                              |
-| **Tech Tree**              | Linear unlock of new ship components.                                  | SMAC-style prototyping (expensive first build), cost reduction over time, branching paths. |
-| **Prototyping**            | Not implemented.                                                       | First-time builds cost extra; standard after that; reduced costs at later tech levels.     |
-| **Strategic Layer**        | Capture systems for more production.                                   | Minefields, battlestations, sensor arrays, repair stations.                                |
-| **System Effects**         | None.                                                                  | Per-system terrain (e.g. nebula = no shields, asteroid = low accuracy).                    |
-| **Ship Production**        | Instant spawn with cost deduction.                                     | Queues, production time, workforce limits.                                                 |
-| **Unit Spam (SMAC-style)** | Basic scout ships, cheap to produce.                                   | Use weak, fast units for harassment, recon, distraction tactics.                           |
-| **Command Hierarchy**      | None.                                                                  | Layered AI control: Admiral → Squad Leader → Captain, with different logic levels.         |
-| **Scouting / Intel**       | Full visibility.                                                       | Fog of war, sensors, cloaking, detection modules.                                          |
+| **Category**               | **Prototype**                                                          | **Future**                                                         |
+| -------------------------- | ---------------------------------------------------------------------- | -------------------------------------------------------------------|
+| **Map / Systems**          | Network of star systems, fixed resources.      | Add system types (e.g. academy, shipyard), chokepoints, random terrain effects.            |
+| **Resources**              | Materials, Supply.                             | Add Personnel (crew), Work (industrial capacity), local production limits.                 |
+| **Galaxy AI**              | Chance to attack, parity fleets                | Smarter AI with defense priorities, personalities, response to tech or terrain.            |
+| **Fleet Combat**           | Move toward enemy, simple damage rules.        | Add rules for formation, targeting priority, range, terrain effects.                       |
+| **Ship Design**            | Chassis + 1–2 fixed weapons.                   | Full modular design: weapons, defenses, utility. Component interactions (e.g. rock-paper). |
+| **Combat Roles**           | All-purpose ships.                             | Specialization: missile boat, tank, scout, drone carrier, etc.                             |
+| **Weapons**                | Basic damage-dealing module.                   | Rock-paper-scissors: lasers, missiles, railguns vs shields, armor, PDC.                    |
+| **Defenses**               | Static HP.                                     | Shields, armor, PDC, terrain-based modifiers.                                              |
+| **Tech Tree**              | Linear unlock of new ship components.          | SMAC-style prototyping (expensive first build), cost reduction over time, branching paths. |
+| **Prototyping**            | Not implemented.                               | First-time builds cost extra; standard after that; reduced costs at later tech levels.     |
+| **Strategic Layer**        | Capture systems for more production.           | Minefields, battlestations, sensor arrays, repair stations.                                |
+| **System Effects**         | None.                                          | Per-system terrain (e.g. nebula = no shields, asteroid = low accuracy).                    |
+| **Ship Production**        | Instant spawn with cost deduction.             | Queues, production time, workforce limits.                                                 |
+| **Unit Spam (SMAC-style)** | Basic scout ships, cheap to produce.           | Use weak, fast units for harassment, recon, distraction tactics.                           |
+| **Command Hierarchy**      | None.                                          | Layered AI control: Admiral → Squad Leader → Captain, with different logic levels.         |
+| **Scouting / Intel**       | Full visibility.                               | Fog of war, sensors, cloaking, detection modules.                                          |
+| **Autoresolve Battles**    | No visuals, combat at 20x speed.               | ML trained on thousands of random battles                                                  |
+| **Fleet Composition**      | Random up to parity                            | Templates with light weightings, successful fleets from testing runs                       |
 
 ## Pre-Battle Setup Examples
 
@@ -106,6 +108,7 @@ Define all AI logic in YAML (rules, actions, goals, doctrine).
 ```
 ## TODO
 
+- Bug: retarget (sometimes)
 - Bug: 2 battles, 2nd fleet gets deleted before battle
 - Retreat when low on hp
 - Radio chatter
@@ -225,3 +228,41 @@ Missiles:
 - Hold fire until good hit chance or high-value target
 - Don't waste on fast ships or weak scouts
 - Retreat if out of ammo (or change role to "distraction")
+
+## Parity
+
+- **Reward Player Action**: 
+    Scouting, cutting off systems, or defending chokepoints visibly weakens or strengthens AI positions.
+- **Create a Sense of Consequence**: 
+    Wins and losses ripple across the map; systems decay when isolated, build up when reinforced.
+- **Enable Predictable Planning with Occasional Surprise**: Most parity shifts are visible and logical; rare spikes (e.g. AI main fleet) create narrative tension.
+- **Support Strategy Without Burden**: Strategic decisions matter, but without economic micromanagement or heavy UI layers.
+- **Enable Light Storytelling**: Key battles or turning points can be surfaced as flavor text, logs, or galaxy headlines.
+
+
+
+
+### Global Parity
+
+| Factor                                  | Effect                        | Notes                                |
+| --------------------------------------- | ----------------------------- | ------------------------------------ |
+| 📈 Time                                 | +2% per turn                  | Basic ramp-up; controls pacing       |
+| 🏁 Difficulty level                     | Base % and ramp rate          | Can adjust starting parity and slope |
+| 🏠 AI holds more systems                | +X% global parity             | Simulates “momentum”                 |
+| ⚖️ Player holds more systems            | -X% global parity             | Balance lever                        |
+| 🔄 AI reinforcements spent recently     | -X% next turn                 | Simulates “cooldown”                 |
+| 🚨 Major AI loss (e.g. main fleet dies) | -X% global morale             | Optional global shock                |
+| 🧠 AI enters “desperation” mode         | Switch to aggressive behavior | Late-game state change               |
+
+### Local Parity (per World)
+
+| Factor                              | Effect                          | Notes                              |
+| ----------------------------------- | ------------------------------- | ---------------------------------- |
+| 🚀 Main fleet present               | +30% parity                     | Moves around, creates threats      |
+| 🔗 Connected to core                | Full reinforcements             | Else suffers decay                 |
+| 🪫 Cut off                          | -10% per turn                   | Down to -50%, no attacks           |
+| 👁️ Player scouted system           | Reinforcements capped           | No surprise stacks                 |
+| 🧭 System scouted player            | Doubles attack chance next turn | Sneaky tension bump                |
+| 🛠️ Has special tag (e.g. Shipyard) | Faster reinforcement rate       | Good for choke design later        |
+| 💥 Recently attacked                | -X% parity until cooldown       | Optional realism (damaged systems) |
+| ⚔️ Recent win                       | +X% temporary boost             | If it successfully repelled player |
