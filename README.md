@@ -229,7 +229,7 @@ Missiles:
 - Don't waste on fast ships or weak scouts
 - Retreat if out of ammo (or change role to "distraction")
 
-## Parity
+## Fleet Parity
 
 - **Reward Player Action**: 
     Scouting, cutting off systems, chokepoints - should visibly matter.
@@ -246,11 +246,9 @@ Missiles:
 | --------------------------------------- | ----------------------------- | ------------------------------------ |
 | 📈 Time                                 | +2% per turn                  | Basic ramp-up; controls pacing       |
 | 🏁 Difficulty level                     | Base % and ramp rate          | Can adjust starting parity and slope |
-| 🏠 AI holds more systems                | +X% global parity             | Simulates “momentum”                 |
-| ⚖️ Player holds more systems            | -X% global parity             | Balance lever                        |
+| 🏠 AI holds more/less systems           | +/-X% global parity           | Simulates “momentum”                 |
 | 🔄 AI reinforcements spent recently     | -X% next turn                 | Simulates “cooldown”                 |
-| 🚨 Major AI loss (e.g. main fleet dies) | -X% global morale             | Optional global shock                |
-| 🧠 AI enters “desperation” mode         | Switch to aggressive behavior | Late-game state change               |
+| 🚨 Major AI loss (e.g. main fleet dies) | -X% global parity             | Optional global shock                |
 
 ### Local Parity (per World) - Ideas
 
