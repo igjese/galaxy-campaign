@@ -232,17 +232,15 @@ Missiles:
 ## Parity
 
 - **Reward Player Action**: 
-    Scouting, cutting off systems, or defending chokepoints visibly weakens or strengthens AI positions.
+    Scouting, cutting off systems, chokepoints - should visibly matter.
 - **Create a Sense of Consequence**: 
-    Wins and losses ripple across the map; systems decay when isolated, build up when reinforced.
-- **Enable Predictable Planning with Occasional Surprise**: Most parity shifts are visible and logical; rare spikes (e.g. AI main fleet) create narrative tension.
-- **Support Strategy Without Burden**: Strategic decisions matter, but without economic micromanagement or heavy UI layers.
-- **Enable Light Storytelling**: Key battles or turning points can be surfaced as flavor text, logs, or galaxy headlines.
+    Wins and losses, reinforcements, system being cut-off - should matter.
+- **Enable Predictable Planning with Occasional Surprise**: 
+    Most parity shifts are visible and logical; rare spikes (e.g. AI main fleet) create narrative tension.
+- **Support Strategy Without Burden**: 
+    Strategic decisions matter, but without economic micromanagement or heavy UI layers.
 
-
-
-
-### Global Parity
+### Global Parity - Ideas
 
 | Factor                                  | Effect                        | Notes                                |
 | --------------------------------------- | ----------------------------- | ------------------------------------ |
@@ -254,7 +252,7 @@ Missiles:
 | 🚨 Major AI loss (e.g. main fleet dies) | -X% global morale             | Optional global shock                |
 | 🧠 AI enters “desperation” mode         | Switch to aggressive behavior | Late-game state change               |
 
-### Local Parity (per World)
+### Local Parity (per World) - Ideas
 
 | Factor                              | Effect                          | Notes                              |
 | ----------------------------------- | ------------------------------- | ---------------------------------- |
