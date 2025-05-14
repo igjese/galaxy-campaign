@@ -229,7 +229,10 @@ Missiles:
 - Don't waste on fast ships or weak scouts
 - Retreat if out of ammo (or change role to "distraction")
 
-## Fleet Parity
+## Parity
+
+In-battle parity: When the player initiates a battle, the AI fleet is spawned on-the-fly to roughly match the cost of the player’s attacking fleet (up to parity, not over). This avoids pre-simulating fleets and simplifies the campaign layer.
+
 
 - **Reward Player Action**: 
     Scouting, cutting off systems, chokepoints - should visibly matter.
