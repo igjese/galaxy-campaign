@@ -10,9 +10,13 @@ func open():
     var move = GameLoop.current_move
     $VBox/Title.text = "Battle at %s" % move.to
     $VBox/Result.text = "Battle is ready to start."
+    
+    var attacker = GameLoop.map.system_map.get(move.from).faction
+    var player_fleet = move.ships if attacker == "player" else move.opponent
+    var ai_fleet = move.opponent if attacker == "player" else move.ships
 
-    populate_summary($VBox/Fleets/Player, move.ships, "Player")
-    populate_summary($VBox/Fleets/AI, move.ai_ships, "AI")
+    populate_summary($VBox/Fleets/Player, player_fleet, "Player")
+    populate_summary($VBox/Fleets/AI, ai_fleet, "AI")
 
     $VBox/Buttons/StartBattle.visible = true
     $VBox/Buttons/Close.visible = false

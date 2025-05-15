@@ -19,7 +19,6 @@ var connections := []
 
 func _ready():
     update_gui()
-    update_indicators()
     assign_random_texture()
     $SystemNode.connect("pressed", Callable(self, "_on_system_pressed"))
 
@@ -70,6 +69,7 @@ func update_gui():
     name_label.add_theme_color_override("font_color", color)
     info_label.add_theme_color_override("font_color", color)
     ships_label.add_theme_color_override("font_color", color)
+    update_indicators()
 
     
 func _on_system_pressed():

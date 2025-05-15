@@ -102,7 +102,8 @@ func begin_process_moves():
     current_move = pending_moves.pop_front()
     current_move.indicator.queue_free()
     var to_star = map.system_map.get(current_move.to)
-    if to_star.faction == "ai" or current_move.from == "ai_fake":
+    var from_star = map.system_map.get(current_move.from)
+    if to_star.faction == "ai" or from_star.faction == "ai":
         change_state(GameState.COMBAT)
     else:
         change_state(GameState.MOVE)
@@ -129,20 +130,32 @@ func transfer_ships():
 
 func begin_combat():
     var to_star = map.system_map.get(current_move.to)
-    var player_fleet = current_move.ships
-    var player_cost = player_fleet.cost()["mats"] + player_fleet.cost()["pers"]
+    var from_star = map.system_map.get(current_move.from)
 
-    # If AI is attacking, check for defenders
-    if current_move.from == "ai_fake" and player_cost <= 0:
+    var is_ai_attacking = from_star.faction == "ai" and to_star.faction == "player"
+
+    var player_group: ShipGroup
+    if is_ai_attacking:
+        var defenders = all_ships.filter(
+            func(ship): return ship.faction == "player" and ship.location == to_star.world_name
+        )
+        player_group = ShipGroup.new_from_fleet(defenders)
+        current_move.opponent = player_group
+    else:
+        player_group = current_move.ships  # player is attacking
+        var player_cost = player_group.cost()["mats"] + player_group.cost()["pers"]
+        current_move.opponent = generate_ai_fleet(player_cost)
+
+    if is_ai_attacking and player_group.counts.is_empty():
         print("📭 %s fell without resistance!" % to_star.name)
         to_star.faction = "ai"
         map.update_gui()
         change_state(GameState.END_TURN)
         return
 
-    # Otherwise: generate AI fleet and begin battle
-    current_move.ai_ships = generate_ai_fleet(player_cost)
     combat_dialog.open()
+
+
 
 
 
@@ -230,18 +243,24 @@ func collect_resources():
 
 
 func end_combat(did_win: bool, survivors: ShipGroup):
-    var star = map.system_map[current_move.to]
+    var move = current_move
+    var from_star = map.system_map.get(move.from)
+    var to_star = map.system_map.get(move.to)
+    var attacker = from_star.faction
+    var defender = to_star.faction
+
     if did_win:
-        star.faction = "player"
-        current_move.ships = survivors
+        to_star.faction = "player"
+        move.ships = survivors  # surviving attacker ships
         transfer_ships()
     else:
-        # Player lost
-        current_move.ships = ShipGroup.new()  # wiped out
+        to_star.faction = "ai"
+        move.ships = ShipGroup.new()  # attacker lost, no survivors
+        # defender keeps control, no ship transfer
+
     map.show()
     var combat_dialog = map.get_node("UI/CombatDialog")
     combat_dialog.show_result(did_win, survivors)
     combat_dialog.show()
     get_tree().get_root().get_node("Main/Battlefield").hide()
     map.update_gui()
-    #change_state(GameState.END_TURN)

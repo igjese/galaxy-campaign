@@ -16,8 +16,11 @@ signal combat_complete(did_win: bool, survivors)
 func start():
     show()
     var move = GameLoop.current_move
-    spawn_fleet(move.ships, player_fleet, false)
-    spawn_fleet(move.ai_ships, ai_fleet, true)
+    var attacker = GameLoop.map.system_map.get(move.from).faction
+    var player_fleet_ships = move.ships if attacker == "player" else move.opponent
+    var ai_fleet_ships = move.opponent if attacker == "player" else move.ships
+    spawn_fleet(player_fleet_ships, player_fleet, false)
+    spawn_fleet(ai_fleet_ships, ai_fleet, true)
     player_admiral.assign_ships()
     ai_admiral.assign_ships()
     player_admiral.evaluate_battle()
@@ -73,7 +76,7 @@ func _on_ship_destroyed(ship):
 func end_battle(winner: String):
     print("🏁 Battle ended — winner: %s" % winner)
     await get_tree().create_timer(1.5).timeout  # Add a 1-second pause
-    var did_win = winner == "player" 
+    var did_win = (winner == "player")
     # Transition out of combat here
     var survivors = collect_survivors(did_win)
     for ship in player_ships:
