@@ -36,9 +36,20 @@ func spawn_worlds():
         world.position = data.position
         world.faction = data.faction if data.has("faction") else "ai"
         world.has_shipyard = data.has_shipyard if data.has("has_shipyard") else false
+        world.connections = []  # 🔹 Add this line
 
         add_child(world)
         system_map[name] = world
+
+    # Now populate connections after all worlds exist
+    for pair in GameData.connections:
+        var a = pair[0]
+        var b = pair[1]
+        if system_map.has(a):
+            system_map[a].connections.append(b)
+        if system_map.has(b):
+            system_map[b].connections.append(a)
+
 
 
 func draw_connections():
@@ -80,16 +91,6 @@ func update_resource_totals():
     ]
 
 
-func _on_move_queued(from: String, to: String, ships: ShipGroup):
-    var from_star = system_map.get(from)
-    var to_star = system_map.get(to)
-    var indicator = move_indicator_scene.instantiate()
-    indicator.setup(from_star.global_position, to_star.global_position, ships.text())
-    $PendingMoves.add_child(indicator)
-    GameLoop.queue_move(from, to, ships, indicator)
-    update_gui()
-
-
 func _on_world_pressed(world_node):
     if world_node.faction != "player":
         return
@@ -112,3 +113,24 @@ func _on_run_debug_pressed():
 
 func _on_combat_complete(did_win: bool, survivors: ShipGroup):
     GameLoop.end_combat(did_win, survivors)
+
+
+func _on_move_queued(from: String, to: String, ships: ShipGroup):
+    var indicator = create_move_indicator(from, to, ships.text())
+    GameLoop.queue_move(from, to, ships, indicator)
+    update_gui()
+
+
+func create_move_indicator(from: String, to: String, label_text := "", color: Color = Color.LIGHT_GREEN) -> Node:
+    var from_star = system_map.get(from)
+    var to_star = system_map.get(to)
+    var is_ai = (from_star.faction == "ai")
+    
+    if is_ai:
+        label_text = "?"
+        color = Color.LIGHT_CORAL
+        
+    var indicator = move_indicator_scene.instantiate()
+    indicator.setup(from_star.global_position, to_star.global_position, label_text, color)
+    $PendingMoves.add_child(indicator)
+    return indicator

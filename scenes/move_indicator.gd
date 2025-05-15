@@ -1,6 +1,6 @@
 extends Node2D
 
-func setup(from_pos: Vector2, to_pos: Vector2, text: String):
+func setup(from_pos: Vector2, to_pos: Vector2, text: String, col: Color = Color.LIGHT_GREEN):
     position = (from_pos + to_pos) / 2
     $Label.text = text
     
@@ -11,5 +11,5 @@ func setup(from_pos: Vector2, to_pos: Vector2, text: String):
     var angle = (to_pos - from_pos).angle()
     rotation = angle if diff.x >= 0 else angle - PI
     
-    $Arrow.modulate = Color.LIGHT_GREEN
-    $Label.modulate = Color.LIGHT_GREEN
+    $Arrow.modulate = col
+    $Label.modulate = col

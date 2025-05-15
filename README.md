@@ -265,3 +265,10 @@ In-battle parity: When the player initiates a battle, the AI fleet is spawned on
 | 🛠️ Has special tag (e.g. Shipyard) | Faster reinforcement rate       | Good for choke design later        |
 | 💥 Recently attacked                | -X% parity until cooldown       | Optional realism (damaged systems) |
 | ⚔️ Recent win                       | +X% temporary boost             | If it successfully repelled player |
+
+## Why Battles Stay Fun (Player Motivation)
+
+- **Uncertainty**: Outcomes vary due to comp, doctrine, and parity — no two fights are alike.
+- **Agency**: Grand Admiral-level commands offer rare but impactful influence mid-battle.
+- **Learning**: Players observe ship and fleet behavior to refine their own doctrine and design.
+- **Progression**: Watching battles generates battlefield data used to unlock tech and equipment upgrades.

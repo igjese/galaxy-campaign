@@ -70,12 +70,13 @@ func _on_clear_pressed():
     
     
 func clear_line_items():
-    ship_order.clear()
-    for line in line_container.get_children():
-        if line is LineIncrement:
-            line.reset()
-            line.update_gui()
-    update_gui()
+    if ship_order:
+        ship_order.clear()
+        for line in line_container.get_children():
+            if line is LineIncrement:
+                line.reset()
+                line.update_gui()
+        update_gui()
 
 
 func _on_shipyard_pressed():

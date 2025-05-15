@@ -2,30 +2,22 @@ extends Node
 
 enum GameState { SETUP, START_TURN, IDLE, PROCESS_MOVES, COMBAT, MOVE, END_TURN}
 var states = ["SETUP","START_TURN", "IDLE", "PROCESS_MOVES", "COMBAT", "MOVE", "END_TURN"]
-
 var state = GameState.IDLE
 var map: Node = null
 var combat_dialog: Node = null
-
 var pending_moves: Array = []
 var current_move = null
-
 var seed = 1234
-
 var turn := 1
 var player_materials := 10
 var player_supply := 10
 var player_personnel := 10
-
 var global_parity := 80.0
 var parity_ramp := 2.0
-
-
+var first_player_attack_done := false
 var selected_world = null
 var all_ships = []  # each ship is a dict or lightweight object
-
 var goal_defs = {}
-
 var run_debug := false
 
 func change_state(new_state: int):
@@ -63,9 +55,41 @@ func begin_start_turn():
     global_parity += parity_ramp
     print("📈 Turn %d — Global Parity now: %.1f%%" % [turn, global_parity])
     collect_resources()
+    decide_ai_attacks()
     map.update_gui()
     change_state(GameState.IDLE)
     
+    
+func decide_ai_attacks():
+    if turn >= 5:
+        for system in map.system_map.values():
+            if system.faction != "ai":
+                continue
+            # Find player-controlled neighbors
+            var targets = []
+            for conn in system.connections:
+                var neighbor = map.system_map.get(conn)
+                if neighbor and neighbor.faction == "player":
+                    targets.append(neighbor)
+            if targets.is_empty():
+                continue
+            if randf() < 0.2:
+                var target = targets[randi() % targets.size()]
+                var player_cost := get_player_fleet_cost_at(target.name)
+                player_cost = max(player_cost, 20)
+                var ai_fleet := generate_ai_fleet(player_cost)
+                print("⚠️ AI attack scheduled: %s → %s (player cost: %d, parity: %.1f%%)" %
+                    [system.world_name, target.world_name, player_cost, global_parity])
+                map._on_move_queued(system.world_name, target.world_name, ai_fleet)
+
+func get_player_fleet_cost_at(system_name: String) -> int:
+    var total := 0
+    for ship in all_ships:
+        if ship.faction == "player" and ship.location == system_name:
+            var design = GameData.ship_designs.get(ship.type, {})
+            total += design.cost_mats + design.cost_pers
+    return total
+
     
 func begin_end_turn():
     if not pending_moves.is_empty():
@@ -78,10 +102,11 @@ func begin_process_moves():
     current_move = pending_moves.pop_front()
     current_move.indicator.queue_free()
     var to_star = map.system_map.get(current_move.to)
-    if to_star.faction == "ai":
+    if to_star.faction == "ai" or current_move.from == "ai_fake":
         change_state(GameState.COMBAT)
     else:
         change_state(GameState.MOVE)
+
         
         
 func begin_move():
@@ -103,38 +128,65 @@ func transfer_ships():
 
 
 func begin_combat():
+    var to_star = map.system_map.get(current_move.to)
     var player_fleet = current_move.ships
     var player_cost = player_fleet.cost()["mats"] + player_fleet.cost()["pers"]
 
-    var effective_cost = int(player_cost * global_parity / 100.0)
-    current_move.ai_ships = generate_ai_fleet(effective_cost)  # Returns ShipGroup
+    # If AI is attacking, check for defenders
+    if current_move.from == "ai_fake" and player_cost <= 0:
+        print("📭 %s fell without resistance!" % to_star.name)
+        to_star.faction = "ai"
+        map.update_gui()
+        change_state(GameState.END_TURN)
+        return
+
+    # Otherwise: generate AI fleet and begin battle
+    current_move.ai_ships = generate_ai_fleet(player_cost)
     combat_dialog.open()
 
 
-func generate_ai_fleet(max_cost: int) -> ShipGroup:
+
+func generate_ai_fleet(player_cost: int) -> ShipGroup:
+    if player_cost <= 0:
+        print("📭 No defenders — skipping fleet generation")
+        return null  # Caller should handle auto-capture
+    var adjusted_cost := 0
+    if not first_player_attack_done:
+        print("🟢 First conquest: AI fleet at 80% parity")
+        adjusted_cost = int(player_cost * 0.8)
+        first_player_attack_done = true
+    else:
+        var swing := randf_range(0.8, 1.2)
+        adjusted_cost = int(player_cost * swing * global_parity / 100.0)
+        print("⚖️ Scaled AI fleet: %.0f%% parity, %.0f%% swing → %d pts" %
+            [global_parity, swing * 100.0, adjusted_cost])
     var result := ShipGroup.new()
     var types = GameData.ship_designs.keys()
-    while max_cost > 0:
+    while adjusted_cost > 0:
         var type = types[randi() % types.size()]
         var design = GameData.ship_designs[type]
         var cost = design.cost_mats + design.cost_pers
-        if cost <= max_cost:
+        if cost <= adjusted_cost:
             result.counts[type] = result.counts.get(type, 0) + 1
-            max_cost -= cost
+            adjusted_cost -= cost
         else:
             break
     return result
 
 
 func queue_move(from: String, to: String, ships: ShipGroup, indicator: Node):
-    # Add move to internal queue
+    # Add move
     pending_moves.append({
         "from": from,
         "to": to,
         "ships": ships,
         "indicator": indicator
     })
-    # Remove moved ships from GameLoop.ships (actual game state mutation)
+    # Skip special cases for AI
+    if from == "ai_fake":
+        # (Optional: add visual indicator to the system here)
+        return
+    # Remove ships in transit
     var remaining := []
     var pending_counts := ships.counts.duplicate()
     for ship in all_ships:
@@ -142,7 +194,7 @@ func queue_move(from: String, to: String, ships: ShipGroup, indicator: Node):
             var t = ship.type
             if pending_counts.has(t) and pending_counts[t] > 0:
                 pending_counts[t] -= 1
-                continue  # ship is in transit
+                continue
         remaining.append(ship)
     all_ships = remaining
     map.update_gui()

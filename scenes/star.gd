@@ -15,6 +15,8 @@ signal world_pressed(world_node)
 @onready var texture_button = $SystemNode  # assuming SystemNode is the TextureButton
 @onready var shipyard_icon = $SystemNode/Shipyard  # update path if needed
 
+var connections := []
+
 func _ready():
     update_gui()
     update_indicators()
