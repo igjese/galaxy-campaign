@@ -17,6 +17,10 @@ var player_materials := 10
 var player_supply := 10
 var player_personnel := 10
 
+var global_parity := 80.0
+var parity_ramp := 2.0
+
+
 var selected_world = null
 var all_ships = []  # each ship is a dict or lightweight object
 
@@ -56,6 +60,8 @@ func begin_setup():
 
 func begin_start_turn():
     turn += 1
+    global_parity += parity_ramp
+    print("📈 Turn %d — Global Parity now: %.1f%%" % [turn, global_parity])
     collect_resources()
     map.update_gui()
     change_state(GameState.IDLE)
@@ -100,7 +106,8 @@ func begin_combat():
     var player_fleet = current_move.ships
     var player_cost = player_fleet.cost()["mats"] + player_fleet.cost()["pers"]
 
-    current_move.ai_ships = generate_ai_fleet(player_cost)  # Returns ShipGroup
+    var effective_cost = int(player_cost * global_parity / 100.0)
+    current_move.ai_ships = generate_ai_fleet(effective_cost)  # Returns ShipGroup
     combat_dialog.open()
 
 
