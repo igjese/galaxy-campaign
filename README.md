@@ -180,10 +180,12 @@ These natural differences let AI behavior emerge without scripting roles — shi
 | Class                  | Real-World Role          | Traits to Emulate                 | Emergent Behavior              |
 | ---------------------- | ------------------------ | --------------------------------- | ------------------------------ |
 | **FF (Frigate)**       | Screening, escort, recon | Fast, cheap, low HP/attack        | Harass, scout, bait, screen    |
+| **DD (Destroyer)**     | Strike escort, anti-cap  | Versatile, medium stats         | Flanker, burst damage, cover |
 | **CL (Light Cruiser)** | Fast strike/support      | Moderate firepower/speed, fragile | Flankers, light push, screen   |
 | **CA (Heavy Cruiser)** | General-purpose brawler  | Solid stats, slower, more durable | Backbone unit, flexible        |
 | **BC (Battlecruiser)** | Fast but heavy-hitting   | High damage, fast, poor armor     | Shock tactics, hit-and-run     |
 | **BB (Battleship)**    | Line anchor, tank        | High HP, slow, powerful           | Line holding, absorbs pressure |
+
 
 ### Realistic and Useful Subclasses
 
@@ -205,6 +207,21 @@ Subclasses simplify ship design by offering ready-made roles—like missile boat
 |        | Command BC           | Bonus to nearby ships (flavor)     | Fleet leader with behavior-modifying doctrine |
 | **BB** | Heavy Gun BB         | Massive cannons, short range       | Dominates line battles, poor agility          |
 |        | Carrier BB           | Launches drones or strike craft    | Strategic asset, high priority target         |
+
+### Ship attributes
+
+Taken from the real world, but:
+- Slightly exaggerated for more immediate impact / more clear disctinction between classes.
+- Some sci-fi conventions are accepted: e.g. CL and BC are "fast", DD is "tincan but packs a punch" etc
+
+| **Class**              | **Speed**(kt) | **Main Guns**(in) | **Armor**(in) | **Displacement**(kt) | **Cost**(\$M) | **Build Time**(mo) |
+| ---------------------- | ------------- | ----------------- | ------------- | -------------------- | ------------- | ------------------ |
+| **Frigate (FF)**       | 30            | 3                 | 0             | 20                   | 2             | 3                  |
+| **Destroyer (DD)**     | 36            | 5                 | 1             | 30                   | 4             | 6                  |
+| **Light Cruiser (CL)** | 38            | 6                 | 2             | 45                   | 8             | 12                 |
+| **Heavy Cruiser (CA)** | 32            | 8                 | 3             | 60                   | 16            | 18                 |
+| **Battlecruiser (BC)** | 40            | 14                | 5             | 90                   | 32            | 24                 |
+| **Battleship (BB)**    | 28            | 16                | 8             | 120                  | 48            | 32                 |
 
 ## Weapons
 
