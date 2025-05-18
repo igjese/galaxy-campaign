@@ -51,6 +51,7 @@ func spawn_fleet(ship_group: ShipGroup, parent: Node, is_ai: bool):
                 ship_ai.fleet = $PlayerFleet
                 ship_ai.enemy_fleet = $AIFleet
             ship.connect("ship_destroyed", Callable(self, "_on_ship_destroyed"))
+            ship.connect("radio_chatter", Callable(self, "_on_ship_chatter"))
 
 
 func get_random_spawn_position(x_base: float) -> Vector2:
@@ -89,6 +90,7 @@ func end_battle(winner: String):
     player_ships.clear()
     ai_ships.clear()
 
+
 func collect_survivors(did_win) -> ShipGroup:
     if not did_win:
         return null
@@ -98,3 +100,18 @@ func collect_survivors(did_win) -> ShipGroup:
         if ship is Ship:
             survivors.add_type(ship.ship_type, 1)
     return survivors
+
+
+func post_chatter(message: String):
+    var label = Label.new()
+    label.text = message
+    label.add_theme_font_size_override("font_size", 12)
+    $UI/RadioChatter.add_child(label)
+    await get_tree().create_timer(5.0).timeout
+    label.queue_free()
+
+
+func _on_ship_chatter(ship: Ship, msg: String):
+    if ship.is_ai:
+        return  # skip enemy chatter during real-time
+    post_chatter("[%s] %s: %s" % [ship.ship_type, ship.ship_name, msg])

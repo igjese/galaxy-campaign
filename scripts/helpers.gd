@@ -32,3 +32,16 @@ func summarize_fleet(fleet: Dictionary) -> String:
 func cost_of(type: String) -> int:
     var design = GameData.ship_designs.get(type)
     return design.cost_mats + design.cost_pers
+
+
+func load_array_from_file(path: String) -> Array:
+    var file = FileAccess.open(path, FileAccess.READ)
+    if not file: 
+        push_error("Failed to load file: %s" % path)
+        return []
+    var lines = []
+    while not file.eof_reached():
+        var line = file.get_line().strip_edges()
+        if line != "":
+            lines.append(line)
+    return lines

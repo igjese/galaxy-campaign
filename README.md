@@ -108,7 +108,6 @@ Define all AI logic in YAML (rules, actions, goals, doctrine).
 ```
 ## TODO
 
-- Bug: retarget (sometimes)
 - Bug: 2 battles, 2nd fleet gets deleted before battle
 - Retreat when low on hp
 - Radio chatter
@@ -117,8 +116,6 @@ Define all AI logic in YAML (rules, actions, goals, doctrine).
 - Ship class speed
 - CL and BC are faster, CA and BB more armored, etc
 - Commands: harass, regroup, keep together
-- AI attacks: 20% chance per connection (except first 5 turns)
-- AI parity at 80% then +2% every turn
 
 Later:
 - Fog of war: scouts, reserve

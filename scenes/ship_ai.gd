@@ -21,6 +21,7 @@ var speed := 40.0
 var drift_vector := Vector2.ZERO
 var drift_speed := speed/15  # adjust for style
 var stop_distance := 50.0
+var previous_step: String = ""
         
 var captain_cooldown := 0.0
 var captain_cooldown_max := 2.0  # Will be randomized
@@ -100,7 +101,7 @@ func run_weapons():
     var dist = target_data["distance"]
     if dist > weapon_range:
         return  # Out of range
-    print("🔫 [%s] Firing at %s (%.0f px)" % [get_parent(), target, dist])
+    print("🔫 [%s] Firing at %s (%.0f px)" % [get_parent().ship_name, target.ship_name, dist])
     get_parent().fire_at(target)
     
 
@@ -134,11 +135,18 @@ func is_step_active(step: String) -> bool:
 
 
 func run_step(current_step):
+    var ship = get_parent()
     if current_step == "fire_at_enemy":
         fire_order = true
+        if current_step != previous_step:
+            ship.emit_signal("radio_chatter", ship, "Weapons free.")
+        print("[%s] %s: %s" % [ship.ship_type, ship.ship_name, "Weapons free."])
     elif current_step == "move_toward_enemy":
+        if current_step != previous_step:
+            ship.emit_signal("radio_chatter", ship, "Moving to engage.")
+        print("[%s] %s: %s" % [ship.ship_type, ship.ship_name, "Moving to engage."])
         start_moving_toward_enemy()
-
+    previous_step = current_step
 
 func start_moving_toward_enemy():
     var target = local_facts.get("closest_enemy", {}).get("ref", null)

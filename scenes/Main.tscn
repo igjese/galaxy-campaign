@@ -160,6 +160,17 @@ script = ExtResource("6_c01mt")
 [node name="Admiral" type="Node" parent="Battlefield/AIFleet"]
 script = ExtResource("6_c01mt")
 
+[node name="UI" type="Control" parent="Battlefield"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="RadioChatter" type="VBoxContainer" parent="Battlefield/UI"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_c01mt")
 

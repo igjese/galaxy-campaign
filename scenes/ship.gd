@@ -14,9 +14,15 @@ var laser_target_node: Node2D = null
 var laser_timer: float = 0.0
 var laser_duration: float = 0.2
 var is_dying := false
+var ship_name := ""
+var names_human_1 = "res://assets/ships/naming/human1.txt"
+var names_human_2 = "res://assets/ships/naming/human2.txt"
+var names_alien_1 = "res://assets/ships/naming/alien1.txt"
+var names_alien_2 = "res://assets/ships/naming/alien2.txt"
 
 
 signal ship_destroyed(ship)
+signal radio_chatter(ship, msg)
 
 func _ready():
     flicker_offset = randf_range(0.0, TAU)  # Random phase offset
@@ -29,6 +35,7 @@ func set_type(ship_type: String, is_ai: bool):
     max_health = design.get("hp", 0)
     atk = design.get("atk", 0)
     def = design.get("def", 0)
+    ship_name = generate_name()
     current_health = max_health
     var path = "res://assets/ships/%s.png" % ship_type
     $Hull.texture = load(path)
@@ -37,6 +44,16 @@ func set_type(ship_type: String, is_ai: bool):
     update_damage_overlay()
     scale_to_normalize()
     
+    
+func generate_name() -> String:
+    var attr_path = names_alien_1 if is_ai else names_human_1
+    var noun_path = names_alien_2 if is_ai else names_human_2
+    var attrs = Helpers.load_array_from_file(attr_path)
+    var nouns = Helpers.load_array_from_file(noun_path)
+    var attr = attrs[randi() % attrs.size()]
+    var noun = nouns[randi() % nouns.size()]
+    return "%s %s" % [attr, noun]
+
 
 func scale_to_normalize():
     var target_height = 30.0
@@ -105,7 +122,7 @@ func draw_laser_to(hit_pos: Vector2):
 func apply_base_damage(incoming: int):
     var effective_damage = max(incoming - def, 1)
     current_health -= effective_damage
-    print("💢 %s takes %d damage (after %d def)" % [name, effective_damage, def])
+    print("💢 %s takes %d damage (after %d def)" % [ship_name, effective_damage, def])
     spawn_explosion(0.5)
     update_damage_overlay()
     if current_health <= 0:
@@ -115,7 +132,8 @@ func die():
     if is_dying:
         return  # Prevent double-die bugs
     is_dying = true
-    print("💥 %s destroyed!" % name)
+    print("💥 %s destroyed!" % ship_name)
+    emit_signal("radio_chatter", self, "Severely hit, abandoning ship.")
     emit_signal("ship_destroyed", self)
     spawn_explosion(1.5)
     await get_tree().create_timer(0.4).timeout
