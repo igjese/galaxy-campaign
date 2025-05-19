@@ -311,9 +311,16 @@ Role Scaling:
 - No lasers on FF (realism: they shouldn’t close distance)
 - No special for FF
 
-Missile special:
-- extra tube, more ammo
+Specials:
+- Missile platform: extra tube, more ammo
+- Sensors platform: extra sensor range
+- Command & Control: sensors, aura cooldown boost
 
+Weapons:
+- All ships (except FF) have light weapons/armor of all types
+- Main weapon is extra and defines the subclass (together with special)
+- FF has either kinetic or missiles and no special
+- Missiles have "ammo count" and can be depleted
 
 ## FRIGATE (FF) SUBCLASSES
 
@@ -342,3 +349,10 @@ Destroyers are the first **specialist warships** — fast, lightly armored, role
 - DDs scale from **fleet tools** to **detachment leaders**
 - In small fleets, DDs act as mainline fighters
 - In large fleets, they support, screen, or strike
+
+## SPECIAL CLASSES (AUXILIARIES)
+
+Provide more reason for fleet composition and need protecting.
+
+- Tenders: resupply e.g. missiles mid-battle
+- Repair ships: slow repair during combat, save heavily damaged ships from being scrapped after combat, provide repair in systems without shipyard
