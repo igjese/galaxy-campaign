@@ -95,7 +95,7 @@ func avoid_overlap():
 
 func get_status() -> Dictionary:
     return {
-        "health_ratio": clamp(current_health / max_health, 0.0, 1.0),
+        "health_ratio": clamp(float(current_health) / max_health, 0.0, 1.0),
     }
     
 func get_ai() -> ShipAI:

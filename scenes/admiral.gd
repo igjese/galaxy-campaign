@@ -92,9 +92,11 @@ func assign_roles(facts: Dictionary) -> Dictionary:
 
 
 func extract_ship_facts(ship, facts: Dictionary) -> Dictionary:
+    var status = facts.get(ship, {})
     return {
-        "health_ratio": facts.get("ship_health", {}).get(ship, 1.0)
+        "health_ratio": status.get("health_ratio", 1.0)
     }
+
 
 
 func matches_condition(ship_facts: Dictionary, condition: Dictionary) -> bool:

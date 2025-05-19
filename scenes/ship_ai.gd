@@ -22,7 +22,7 @@ var drift_vector := Vector2.ZERO
 var drift_speed := speed/15  # adjust for style
 var stop_distance := 50.0
 var previous_step: String = ""
-        
+var is_retreating := false
 var captain_cooldown := 0.0
 var captain_cooldown_max := 2.0  # Will be randomized
 var captain_cooldown_interval := 0.5
@@ -131,6 +131,8 @@ func is_step_active(step: String) -> bool:
         return fire_order
     if step == "move_toward_enemy":
         return move_toward_enemy
+    if step == "run_away":
+        return is_retreating
     return false  # extend as needed
 
 
@@ -146,7 +148,29 @@ func run_step(current_step):
             ship.emit_signal("radio_chatter", ship, "Moving to engage.")
         print("[%s] %s: %s" % [ship.ship_type, ship.ship_name, "Moving to engage."])
         start_moving_toward_enemy()
+    elif current_step == "run_away":
+        ship.emit_signal("radio_chatter", ship, "Retreating.")
+        print("[%s] %s: %s" % [ship.ship_type, ship.ship_name, "Retreating."])
+        start_retreating()
     previous_step = current_step
+    
+    
+func start_retreating():
+    var ship_pos = get_parent().global_position
+    var corner = Vector2()  # default retreat point
+
+    if side == Side.PLAYER:
+        corner = Vector2(100, 400)  # bottom-right
+    else:
+        corner = Vector2(1100, 400)  # top-left
+
+    var dummy_target = Node2D.new()
+    dummy_target.global_position = corner
+    move_order = dummy_target
+    move_toward_enemy = true
+    is_retreating = true
+
+
 
 func start_moving_toward_enemy():
     var target = local_facts.get("closest_enemy", {}).get("ref", null)
@@ -176,6 +200,7 @@ func gather_local_facts():
     local_facts["enemy_direction"] = dir
 
     local_facts["closest_enemy"] = {"ref": closest, "distance": closest_dist} if closest else null
+    local_facts["doing"] = previous_step
     print(local_facts)
 
 

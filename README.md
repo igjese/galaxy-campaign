@@ -350,7 +350,7 @@ Destroyers are the first **specialist warships** — fast, lightly armored, role
 - In small fleets, DDs act as mainline fighters
 - In large fleets, they support, screen, or strike
 
-## SPECIAL CLASSES (AUXILIARIES)
+## SUPPORT CLASSES (AUXILIARIES)
 
 Provide more reason for fleet composition and need protecting.
 
