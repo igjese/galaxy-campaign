@@ -15,8 +15,8 @@ var side := Side.PLAYER  # or "ai"
 var fleet: Node = null
 var enemy_fleet: Node = null
 var fire_order := false
-var move_toward_enemy := false
-var move_order = null
+var move_target: Node2D = null  # dynamic, tracks a node
+var move_destination: Vector2 = Vector2.ZERO  # fixed point to move toward
 var speed := 40.0
 var drift_vector := Vector2.ZERO
 var drift_speed := speed/15  # adjust for style
@@ -42,30 +42,39 @@ func _process(delta):
         weapons_cooldown = randf_range(weapons_cooldown_max - weapons_cooldown_interval, weapons_cooldown_max + weapons_cooldown_interval)
     run_navigation(delta)
     
+    
+func move_toward_destination(target: Node2D):
+    move_target = target
+    if target:
+        move_destination = target.global_position
+
 
 func run_navigation(delta):
     var ship = get_parent()
-    if move_toward_enemy and move_order and move_order is Node2D:
-        var target_pos = move_order.global_position
-        var distance = ship.global_position.distance_to(target_pos)
-
+    # If move_target is assigned, track its position continuously
+    if move_target and is_instance_valid(move_target):
+        move_destination = move_target.global_position
+    # Move if we have a valid destination
+    if move_destination != Vector2.ZERO:
+        var distance = ship.global_position.distance_to(move_destination)
         if distance > stop_distance:
-            var direction = (target_pos - ship.global_position).normalized()
-            drift_vector = direction  # <-- Save direction for drift
+            var direction = (move_destination - ship.global_position).normalized()
+            drift_vector = direction
             ship.global_position += direction * speed * delta
             rotate_ship_toward(direction, delta)
         else:
-            move_toward_enemy = false
+            move_target = null
+            move_destination = Vector2.ZERO
     else:
-        # Apply passive drift if no active movement
+        # Passive drift and idle rotation
         ship.global_position += drift_vector * drift_speed * delta
-        # While idle, rotate toward target if known
         var target_data = local_facts.get("closest_enemy", null)
         if target_data and target_data.has("ref"):
             var target = target_data["ref"]
             if is_instance_valid(target):
                 var dir_to_target = (target.global_position - ship.global_position).normalized()
                 rotate_ship_toward(dir_to_target, delta)
+
 
 
 func rotate_ship_toward(direction: Vector2, delta: float):
@@ -130,10 +139,11 @@ func is_step_active(step: String) -> bool:
     if step == "fire_at_enemy":
         return fire_order
     if step == "move_toward_enemy":
-        return move_toward_enemy
+        return move_target != null and not is_retreating
     if step == "run_away":
-        return is_retreating
-    return false  # extend as needed
+        return move_target != null and is_retreating
+    return false
+
 
 
 func run_step(current_step):
@@ -156,27 +166,18 @@ func run_step(current_step):
     
     
 func start_retreating():
-    var ship_pos = get_parent().global_position
-    var corner = Vector2()  # default retreat point
-
-    if side == Side.PLAYER:
-        corner = Vector2(100, 400)  # bottom-right
-    else:
-        corner = Vector2(1100, 400)  # top-left
-
-    var dummy_target = Node2D.new()
-    dummy_target.global_position = corner
-    move_order = dummy_target
-    move_toward_enemy = true
+    var retreat_point = Vector2(100, 400) if side == Side.PLAYER else Vector2(1100, 400)
+    var dummy_node = Node2D.new()
+    dummy_node.global_position = retreat_point
+    move_toward_destination(dummy_node)
     is_retreating = true
-
 
 
 func start_moving_toward_enemy():
     var target = local_facts.get("closest_enemy", {}).get("ref", null)
     if target:
-        move_order = target
-        move_toward_enemy = true
+        move_toward_destination(target)
+
 
     
 func gather_local_facts():
