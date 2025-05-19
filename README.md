@@ -110,8 +110,6 @@ Define all AI logic in YAML (rules, actions, goals, doctrine).
 
 - Bug: 2 battles, 2nd fleet gets deleted before battle
 - Retreat when low on hp
-- Radio chatter
-- Ship names
 - CL, CA, BC, BB ship classes
 - Ship class speed
 - CL and BC are faster, CA and BB more armored, etc
@@ -286,3 +284,61 @@ In-battle parity: When the player initiates a battle, the AI fleet is spawned on
 - **Agency**: Grand Admiral-level commands offer rare but impactful influence mid-battle.
 - **Learning**: Players observe ship and fleet behavior to refine their own doctrine and design.
 - **Progression**: Watching battles generates battlefield data used to unlock tech and equipment upgrades.
+
+
+# SHIP DESIGN SUMMARY
+
+## Design Philosophy
+
+- **SMAC-style system**: Simple parts with emergent combinations
+- Each ship = **Chassis + Subclass + Tech Level**
+- No granular customization: all loadouts are **predefined by subclass**
+- Player only chooses **tech tier** (e.g. Laser Mk II, Armor Mk I)
+
+## Structure Per Ship
+
+| Component           | Controlled By                                                    |
+| ------------------- | ---------------------------------------------------------------- |
+| **Chassis**         | Ship class (FF, DD, etc.) → defines base stats & slots           |
+| **Subclass**        | Fixed combo of weapon + special role behavior                    |
+| **Main Weapon**     | Fixed per subclass (missile, laser, railgun)                     |
+| **Defense Modules** | Predefined slots (vary by chassis), tech level selected globally |
+| **Special Module**  | Baked into subclass (not player-selected)                        |
+
+Role Scaling:
+- Bigger ships = more slots, more systems
+- Smaller ships = fewer systems, narrower roles
+- No lasers on FF (realism: they shouldn’t close distance)
+- No special for FF
+
+Missile special:
+- extra tube, more ammo
+
+
+## FRIGATE (FF) SUBCLASSES
+
+Frigates are **cheap, expendable tactical tools** — not for direct combat.
+
+| Code     | Subclass Name   | Main Weapon   | Built-In Special    | Role                  | Behavior                     |
+| -------- | --------------- | ------------- | ------------------- | --------------------- | ---------------------------- |
+| **FF-K** | Kinetic Frigate | Light railgun | *None*              | Scout, courier, bait  | Fast, agile, disposable      |
+| **FF-M** | Missile Frigate | Missiles      | +6 missile capacity | Long-range skirmisher | Fire early, retreat when dry |
+
+- FF-K is your **default utility frigate**
+- FF-M is your **cheap burst striker**, becomes inefficient when empty
+
+
+## DESTROYER (DD) SUBCLASSES
+
+Destroyers are the first **specialist warships** — fast, lightly armored, role-focused.
+
+| Code     | Subclass Name     | Main Weapon | Built-In Special          | Role                         | Behavior                           |
+| -------- | ----------------- | ----------- | ------------------------- | ---------------------------- | ---------------------------------- |
+| **DD-M** | Missile Destroyer | Missiles    | +6 missiles               | Anti-capital alpha strike    | Front-loads damage, then withdraws |
+| **DD-I** | Interceptor       | Lasers      | Afterburner (speed burst) | Flanker, anti-scout          | Rush, harass, peel off             |
+| **DD-P** | PDC Escort        | Lasers      | Point Defense enhancement | Protect allies from missiles | Escort capitals, defensive         |
+| **DD-R** | Recon Destroyer   | Kinetics    | Sensor Suite              | Scouting / early detection   | Edge patrol, info role             |
+
+- DDs scale from **fleet tools** to **detachment leaders**
+- In small fleets, DDs act as mainline fighters
+- In large fleets, they support, screen, or strike

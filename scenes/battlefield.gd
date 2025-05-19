@@ -111,6 +111,7 @@ func post_chatter(message: String):
     label.queue_free()
 
 
+
 func _on_ship_chatter(ship: Ship, msg: String):
     if ship.is_ai:
         return  # skip enemy chatter during real-time
