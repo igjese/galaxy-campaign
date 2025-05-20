@@ -8,7 +8,5 @@ goal_preferences:
 role_conditions:
   - retreat:
       health_below: 0.3
-  - support:
-      health_below: 0.5
   - assault:
       default: true

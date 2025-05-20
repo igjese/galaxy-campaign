@@ -21,7 +21,7 @@ var speed := 40.0
 var drift_vector := Vector2.ZERO
 var drift_speed := speed/15  # adjust for style
 var stop_distance := 50.0
-var previous_step: String = ""
+var last_action_issued: String = ""
 var is_retreating := false
 var captain_cooldown := 0.0
 var captain_cooldown_max := 2.0  # Will be randomized
@@ -141,8 +141,9 @@ func is_step_active(step: String) -> bool:
     if step == "move_toward_enemy":
         return move_target != null and not is_retreating
     if step == "run_away":
-        return move_target != null and is_retreating
+        return is_retreating and move_destination != Vector2.ZERO
     return false
+
 
 
 
@@ -150,11 +151,11 @@ func run_step(current_step):
     var ship = get_parent()
     if current_step == "fire_at_enemy":
         fire_order = true
-        if current_step != previous_step:
+        if current_step != last_action_issued:
             ship.emit_signal("radio_chatter", ship, "Weapons free.")
         print("[%s] %s: %s" % [ship.ship_type, ship.ship_name, "Weapons free."])
     elif current_step == "move_toward_enemy":
-        if current_step != previous_step:
+        if current_step != last_action_issued:
             ship.emit_signal("radio_chatter", ship, "Moving to engage.")
         print("[%s] %s: %s" % [ship.ship_type, ship.ship_name, "Moving to engage."])
         start_moving_toward_enemy()
@@ -162,7 +163,7 @@ func run_step(current_step):
         ship.emit_signal("radio_chatter", ship, "Retreating.")
         print("[%s] %s: %s" % [ship.ship_type, ship.ship_name, "Retreating."])
         start_retreating()
-    previous_step = current_step
+    last_action_issued = current_step
     
     
 func start_retreating():
@@ -201,7 +202,7 @@ func gather_local_facts():
     local_facts["enemy_direction"] = dir
 
     local_facts["closest_enemy"] = {"ref": closest, "distance": closest_dist} if closest else null
-    local_facts["doing"] = previous_step
+    local_facts["doing"] = last_action_issued
     print(local_facts)
 
 
