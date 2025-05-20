@@ -76,11 +76,11 @@ func decide_ai_attacks():
             if randf() < 0.2:
                 var target = targets[randi() % targets.size()]
                 var player_cost := get_player_fleet_cost_at(target.name)
-                player_cost = max(player_cost, 20)
                 var ai_fleet := generate_ai_fleet(player_cost)
                 print("⚠️ AI attack scheduled: %s → %s (player cost: %d, parity: %.1f%%)" %
                     [system.world_name, target.world_name, player_cost, global_parity])
                 map._on_move_queued(system.world_name, target.world_name, ai_fleet)
+
 
 func get_player_fleet_cost_at(system_name: String) -> int:
     var total := 0
@@ -154,15 +154,14 @@ func begin_combat():
         return
 
     combat_dialog.open()
-
-
-
+    
+    
+func get_cheapest_ship_cost() -> int:
+    var ff = GameData.ship_designs["FF"]
+    return ff.cost_mats + ff.cost_pers
 
 
 func generate_ai_fleet(player_cost: int) -> ShipGroup:
-    if player_cost <= 0:
-        print("📭 No defenders — skipping fleet generation")
-        return null  # Caller should handle auto-capture
     var adjusted_cost := 0
     if not first_player_attack_done:
         print("🟢 First conquest: AI fleet at 80% parity")
@@ -173,6 +172,9 @@ func generate_ai_fleet(player_cost: int) -> ShipGroup:
         adjusted_cost = int(player_cost * swing * global_parity / 100.0)
         print("⚖️ Scaled AI fleet: %.0f%% parity, %.0f%% swing → %d pts" %
             [global_parity, swing * 100.0, adjusted_cost])
+    var cheapest_cost = get_cheapest_ship_cost()
+    var min_defense_cost = cheapest_cost * (2 + turn / 5)  # +1x every 5 turns
+    adjusted_cost = max(adjusted_cost, min_defense_cost)            
     var result := ShipGroup.new()
     var types = GameData.ship_designs.keys()
     while adjusted_cost > 0:
