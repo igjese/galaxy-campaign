@@ -106,19 +106,6 @@ Define all AI logic in YAML (rules, actions, goals, doctrine).
         ↓
 [ Game World / Godot Ships ]
 ```
-## TODO
-
-- CL, CA, BC, BB ship classes
-- Ship class speed
-- CL and BC are faster, CA and BB more armored, etc
-- Commands: harass, regroup, keep together
-
-Later:
-- Fog of war: scouts, reserve
-- Supply resource (ships use it for upkeep)
-- Personel resource 
-- Pre-generated batches of context-specific messages for radio-chatter and galaxy news
-- Galaxy news from ai logs (battles, map movements)
 
 ## Tech Tree
 
