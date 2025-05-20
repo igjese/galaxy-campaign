@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="Worlds & Fleets: Galaxy"
+config/name="Fleets & Worlds: Andromeda"
 run/main_scene="uid://dbkbcp753u33p"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="uid://dsljlknkbitdx"

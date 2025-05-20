@@ -1,4 +1,4 @@
-# Worlds and Fleets: Andromeda
+# Fleets and Worlds: Andromeda
 (Game Design Document)
 
 ## Game Concept
@@ -109,7 +109,6 @@ Define all AI logic in YAML (rules, actions, goals, doctrine).
 ## TODO
 
 - Bug: 2 battles, 2nd fleet gets deleted before battle
-- Retreat when low on hp
 - CL, CA, BC, BB ship classes
 - Ship class speed
 - CL and BC are faster, CA and BB more armored, etc
