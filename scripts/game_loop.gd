@@ -250,7 +250,6 @@ func end_combat(did_win: bool, survivors: ShipGroup):
     var to_star = map.system_map.get(move.to)
     var attacker = from_star.faction
     var defender = to_star.faction
-
     if did_win:
         to_star.faction = "player"
         move.ships = survivors  # surviving attacker ships
@@ -259,10 +258,10 @@ func end_combat(did_win: bool, survivors: ShipGroup):
         to_star.faction = "ai"
         move.ships = ShipGroup.new()  # attacker lost, no survivors
         # defender keeps control, no ship transfer
-
     map.show()
     var combat_dialog = map.get_node("UI/CombatDialog")
     combat_dialog.show_result(did_win, survivors)
     combat_dialog.show()
     get_tree().get_root().get_node("Main/Battlefield").hide()
     map.update_gui()
+    change_state(GameState.END_TURN)

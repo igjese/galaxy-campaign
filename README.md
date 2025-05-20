@@ -108,8 +108,6 @@ Define all AI logic in YAML (rules, actions, goals, doctrine).
 ```
 ## TODO
 
-- Bug: 2 battles, 2nd fleet gets deleted before battle
-- Bug: empty enemy fleet
 - CL, CA, BC, BB ship classes
 - Ship class speed
 - CL and BC are faster, CA and BB more armored, etc
