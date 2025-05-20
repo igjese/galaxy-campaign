@@ -23,6 +23,10 @@ Simple minimalistic ideas that work:
 - Campaign like Gratuitous space battles
 - Ship designs like Sid Meiers Alpha Centauri
 
+### Implementation Status and TODO
+
+📌 See the full [project status and TODO list](todo.md) for implementation status and upcoming tasks.
+
 
 ## Planned Feature Set
 

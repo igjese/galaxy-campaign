@@ -3,12 +3,38 @@
 
 ## TODO
 
+### AI Enhancements
+
+Tactical AI Enhancements
+- Add `wait_for_allies` step to enable regrouping before engagement.
+- Implement `formation_preferences` in doctrine (e.g., rear/front tags).
+- Use `formation_offset` in Admiral to bias positioning based on role and HP.
+- Add `move_behind_friendlies` step for basic support positioning.
+
+Role Logic Refinement
+- Prevent `support` or `retreat` roles if no frontline exists.
+- Force `assault` role if ship is the only remaining combat unit.
+- Add doctrine-defined `reactivation_conditions` (e.g., return from retreat if outnumbered).
+
+Emergency Behavior
+- Implement `should_emergency_retreat()` in ShipAI for critical HP override.
+- Allow temporary self-directed goal override (`retreat`) when survival is at risk.
+
+Targeting Behavior
+- Extend `focus fire` scoring to include ally-fire weighting (e.g., prioritize common target).
+- Add targeting bias for high-threat enemies (e.g., highest attack power).
+
+Tactical Reserve
+- Add `standby` goal for heavily damaged ships.
+- Trigger `reactivation` from standby if allies are outnumbered or dying.
+
+
+### Other
 - CL, CA, BC, BB ship classes
 - Ship class speed
 - CL and BC are faster, CA and BB more armored, etc
 - Commands: harass, regroup, keep together
 
----
 
 ## Feature Coverage Snapshot (vs. Planned Set)
 
@@ -35,7 +61,6 @@ This section tracks which parts of the high-level feature set are implemented in
 | **Autoresolve Battles**    | ❌ Not implemented; all combat is visual/real-time for now.                                            |
 | **Fleet Composition**      | ✅ AI fleet cost scaled to player + parity; uses `generate_ai_fleet()` logic.                          |
 
----
 
 ## In Progress / Partial Systems
 
@@ -64,7 +89,6 @@ These features are partially implemented, prototyped, or planned for short-term 
 - `materials` used for costs; `supply` and `personnel` tracked but unused.
 - Only one ship type used for defense scaling (`FF`); extensible, but hardcoded.
 
----
 
 ## Other
 
